@@ -53,4 +53,33 @@ class BaseValidate extends Validate
 //            return $field . '必须为整数';
         }
     }
+
+    protected function isMobile($value)
+    {
+        $pattern = '/^1(3|5|8)\d{9}$/';
+        if (!preg_match($pattern, $value)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function getDataOnScene($arrays)
+    {
+        $scene = $this->currentScene;
+        $paramKeys = $this->scene[$scene];
+        $paramArray = [];
+
+        foreach ($paramKeys as $k => $v) {
+            if (array_key_exists($v, $arrays)) {
+                $paramArray[$v] = $arrays[$v];
+            }
+
+            if (array_key_exists($k, $arrays)) {
+                $paramArray[$k] = $arrays[$k];
+            }            
+        }
+
+        return $paramArray;
+    }
 }

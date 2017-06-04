@@ -16,10 +16,21 @@ Route::get(':version/banner/:id',"api/:version.Banner/getBanner");
 Route::get(':version/theme',"api/:version.Theme/getSimpleList");
 Route::get(':version/theme/:id','api/:version.Theme/getComplexOne');
 
-Route::get(':version/product/recent','api/:version.Product/getRecent');
-Route::get(':version/product/by_category','api/:version.Product/getAllByCategory');
+// Route::get(':version/product/recent','api/:version.Product/getRecent');
+// Route::get(':version/product/by_category','api/:version.Product/getAllByCategory');
+// Route::get(':version/product/:id','api/:version.Product/getOne');
+
+Route::group(':version/product',function(){
+	Route::get('/:id','api/:version.Product/getOne',[],['id'=>'\d+']);
+	Route::get('/recent','api/:version.Product/getRecent');
+	Route::get('/by_category','api/:version.Product/getAllByCategory');
+});
 
 Route::get(':version/category/all','api/:version.Category/getAllCategories');
 
 Route::post(':version/token/user','api/:version.Token/getToken');
+
+Route::group(':version/address',function(){
+	Route::post('','api/:version.Address/createOrUpdateAddress');
+});
 

@@ -17,4 +17,9 @@ class User extends BaseModel
             ->find();
         return $user;
     }
+
+    public function address()
+    {
+    	return $this->hasOne('UserAddress','user_id','id');
+    }
 }
