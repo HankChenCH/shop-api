@@ -29,8 +29,15 @@ Route::group(':version/product',function(){
 Route::get(':version/category/all','api/:version.Category/getAllCategories');
 
 Route::post(':version/token/user','api/:version.Token/getToken');
+Route::post(':version/token/admin','api/:version.Token/getAdminToken');
 
 Route::group(':version/address',function(){
 	Route::post('','api/:version.Address/createOrUpdateAddress');
 });
 
+Route::post(':version/order','api/:version.Order/placeOrder');
+Route::get(':version/order/by_user','api/:version.Order/getSummaryByUser');
+Route::get(':version/order/:id','api/:version.Order/getDetail',[],['id'=>'\d+']);
+
+Route::post(':version/pay/pre_order','api/:version.Pay/getPreOrder');
+Route::post(':version/pay/wxnotify','api/:version.Pay/receiveWxNotify');

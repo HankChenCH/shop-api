@@ -20,7 +20,19 @@ class Token
         $ut = new UserToken($code);
         $token = $ut->get();
         return [
-            'token'=>$token
+            'token' => $token
         ];
+    }
+
+    public function getAdminToken()
+    {
+        header("Access-Control-Allow-Origin: *"); 
+    	$token = UserToken::generateToken();
+    	return [
+    		'data' => [
+    			'token' => $token,
+    			'exprie_in' => time() + 7200 
+    		]
+    	];
     }
 }

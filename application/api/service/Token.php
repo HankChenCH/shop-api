@@ -57,9 +57,28 @@ class Token
 		return $uid;
 	}
 
+	public static function isValidOperate($checkUID)
+    {
+        if (!$checkUID){
+            throw new Exception('检查UID时必须传入一个被检查的UID');
+        }
+
+        $currentOperateUID = self::getCurrentUid();
+        if ($checkUID === $currentOperateUID){
+            return true;
+        }
+
+        return false;
+    }
+
 	public static function needPrimaryScope()
 	{
 		return self::checkScope('>=',ScopeEnum::User);
+	}
+
+	public static function needExclusiveScope()
+	{
+		return self::checkScope('==',ScopeEnum::User);
 	}
 
 	private static function checkScope($op='==',$scopeType)

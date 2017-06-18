@@ -18,4 +18,9 @@ class BaseController extends Controller
 	{
         return TokenService::needPrimaryScope();
 	}
+
+	protected function checkExclusiveScope()
+	{
+		return TokenService::needExclusiveScope();
+	}
 }
