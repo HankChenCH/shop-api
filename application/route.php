@@ -29,10 +29,12 @@ Route::group(':version/product',function(){
 Route::get(':version/category/all','api/:version.Category/getAllCategories');
 
 Route::post(':version/token/user','api/:version.Token/getToken');
+Route::post(':version/token/verify','api/:version.Token/validateToken');
 Route::post(':version/token/admin','api/:version.Token/getAdminToken');
 
 Route::group(':version/address',function(){
 	Route::post('','api/:version.Address/createOrUpdateAddress');
+	Route::get('','api/:version.Address/getAddress');
 });
 
 Route::post(':version/order','api/:version.Order/placeOrder');

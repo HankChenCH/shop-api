@@ -21,6 +21,6 @@ class AddressNew extends BaseValidate
 	];
 
 	protected $scene = [
-        'createAndUpdate' => ['name','mobile','province','city','country','detail']
+        'createAndUpdate' => ['name','mobile','province','city','county','detail']
 	];
 }
