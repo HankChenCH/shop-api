@@ -56,9 +56,9 @@ class Pay
         $wxOrderData->SetOut_trade_no($this->orderNO);
         $wxOrderData->SetTrade_type('JSAPI');
         $wxOrderData->SetTotal_fee($totalPrice * 100);
-        $wxOrderData->SetBody('探咖啡');
+        $wxOrderData->SetBody('探小店');
         $wxOrderData->SetOpenid($openid);
-        $wxOrderData->SetNotify_url('https://www.baidu.com');
+        $wxOrderData->SetNotify_url(config('wx.pay_callback'));
 
         return $this->getPaySignature($wxOrderData);
     }
@@ -75,6 +75,9 @@ class Pay
             ]);
             Log::record($wxOrder,'error');
             Log::record('获取预支付订单失败','error');
+            throw new Exception([
+                
+            ]);
         }
 
         $this->reacordPreOrder($wxOrder);
