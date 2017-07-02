@@ -7,6 +7,6 @@
  */
 
 return [
-    'img_prefix' => 'http://api.c.cn/images',
+    'img_prefix' => 'https://www.onegledog.cn/images',
     'token_expire_in' => 7200
 ];
