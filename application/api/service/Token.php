@@ -106,4 +106,14 @@ class Token
 
 		throw new ForbiddenException();
 	}
+
+	public static function verifyToken($token)
+	{
+		$exisit = Cache::get($token);
+		if ($exisit) {
+			return true;
+		}else{
+			return false;
+		}
+	}
 }

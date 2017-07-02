@@ -153,7 +153,7 @@ class Order
 			}
 
 			$status['orderPrice'] += $pStatus['totalPrice'];
-			$status['totalCount'] += $pStatus['count'];
+			$status['totalCount'] += $pStatus['counts'];
 			array_push($status['pStatusArray'], $pStatus); 
 		}
 
@@ -167,7 +167,9 @@ class Order
 		$pStatus = [
 			'id' => null,
 			'haveStock' => false,
-			'count' => 0,
+			'counts' => 0,
+			'price' => null,
+			'main_img_url' => null,
 			'name' => '',
 			'totalPrice' => 0
 		];
@@ -186,7 +188,9 @@ class Order
 			$product = $products[$pIndex];
 			$pStatus['id'] = $product['id'];
 			$pStatus['name'] = $product['name'];
-			$pStatus['count'] = $oCount;
+			$pStatus['counts'] = $oCount;
+			$pStatus['price'] = $product['price'];
+			$pStatus['main_img_url'] = $product['main_img_url'];
 			$pStatus['totalPrice'] = $product['price'] * $oCount;
 
 			if ($product['stock'] - $oCount >= 0) {
