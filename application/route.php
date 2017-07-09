@@ -24,6 +24,7 @@ Route::group(':version/product',function(){
 	Route::get('/:id','api/:version.Product/getOne',[],['id'=>'\d+']);
 	Route::get('/recent','api/:version.Product/getRecent');
 	Route::get('/by_category','api/:version.Product/getAllByCategory');
+	Route::get('/search','api/:version.Product/getSearchByKeyWord');
 });
 
 Route::get(':version/category/all','api/:version.Category/getAllCategories');
@@ -43,3 +44,5 @@ Route::get(':version/order/:id','api/:version.Order/getDetail',[],['id'=>'\d+'])
 
 Route::post(':version/pay/pre_order','api/:version.Pay/getPreOrder');
 Route::post(':version/pay/wxnotify','api/:version.Pay/receiveWxNotify');
+
+Route::get(':version/search/all','api/:version.SearchWord/allSearch');

@@ -55,4 +55,15 @@ class Product
 
         return $product;
 	}
+
+	public function getSearchByKeyWord($keyword, $page, $size)
+	{
+		$products = ProductModel::getProductsByKeyWord($keyword,$page,$size);
+
+		if ($products->isEmpty()) {
+			throw new ProductException();
+		}
+
+		return $products;
+	}
 }

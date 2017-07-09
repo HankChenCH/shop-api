@@ -58,4 +58,13 @@ class Product extends BaseModel
 
         return $product;
 	}
+
+	public static function getProductsByKeyWord($keyword, $page, $size)
+	{
+		$products = self::where('name','LIKE',"%{$keyword}%")
+			->order('id','DESC')
+			->paginate($size,true,['page' => $page]); 
+
+		return $products;
+	}
 }
