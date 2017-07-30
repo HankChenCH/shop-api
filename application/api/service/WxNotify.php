@@ -64,7 +64,7 @@ class WxNotify extends \WxPayNotify
 
 				Db::commit();
 				return true;
-			}catch(Exception $e){
+			}catch(\Exception $e){
 
 				Db::rollback();
 				Log::init([

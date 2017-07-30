@@ -12,8 +12,8 @@ use app\api\service\Order as OrderService;
 use app\api\model\Order as OrderModel;
 use app\lib\exception\OrderException;
 use app\lib\exception\TokenException;
+use app\lib\exception\WxException;
 use app\lib\enum\OrderStatusEnum;
-use think\Exception;
 use think\Loader;
 use think\Log;
 
@@ -75,9 +75,7 @@ class Pay
             ]);
             Log::record($wxOrder,'error');
             Log::record('获取预支付订单失败','error');
-            throw new Exception([
-                
-            ]);
+            throw new WxException();
         }
 
         $this->reacordPreOrder($wxOrder);

@@ -14,15 +14,16 @@ use app\lib\exception\SearchwordException;
 
 class SearchWord extends BaseController
 {
-	protected $beforeActionList = [];
+	// protected $beforeActionList = [];
 
 	public function allSearch($page=1, $size=5)
 	{
 		(new PagingParameter)->gocheck();
 
-		$searchData = SearchWordModel::where('delete_time','IS NULL')
+		$searchData = (new SearchWordModel)
 					->order('count desc')
-					->paginate($size,true,['page' => $page]);
+					->select();
+					// ->paginate($size,true,['page' => $page]);
 
 		if ($searchData->isEmpty()) {
 			throw new SearchwordException();

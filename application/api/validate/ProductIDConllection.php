@@ -9,13 +9,13 @@
 namespace app\api\validate;
 
 
-class IDConllection extends BaseValidate
+class ProductIDConllection extends BaseValidate
 {
     protected $rule = [
-        'ids' => 'require|checkIDs'
+        'product_id' => 'require|checkIDs'
     ];
 
     protected $message = [
-        'ids' => 'ids必须是以逗号分隔的正整数'
+        'product_id' => 'ids必须是以逗号分隔的正整数'
     ];
 }

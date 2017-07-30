@@ -16,18 +16,27 @@ Route::get(':version/banner/:id',"api/:version.Banner/getBanner");
 Route::get(':version/theme',"api/:version.Theme/getSimpleList");
 Route::get(':version/theme/:id','api/:version.Theme/getComplexOne');
 
-// Route::get(':version/product/recent','api/:version.Product/getRecent');
-// Route::get(':version/product/by_category','api/:version.Product/getAllByCategory');
-// Route::get(':version/product/:id','api/:version.Product/getOne');
-
 Route::group(':version/product',function(){
+	Route::get('','api/:version.Product/getAll');
 	Route::get('/:id','api/:version.Product/getOne',[],['id'=>'\d+']);
 	Route::get('/recent','api/:version.Product/getRecent');
 	Route::get('/by_category','api/:version.Product/getAllByCategory');
 	Route::get('/search','api/:version.Product/getSearchByKeyWord');
+	Route::get('/in_category/all','api/:version.Product/getAllInCategory');
+	Route::put('/:id/stock_and_price','api/:version.Product/updateProductStockAndPrice');
+	Route::put('/:id/pullOnOff','api/:version.Product/pullOnOffProduct');
+	Route::delete('/:id','api/:version.Product/removeProduct');
 });
 
-Route::get(':version/category/all','api/:version.Category/getAllCategories');
+Route::group(':version/category',function(){
+	Route::delete('/batch','api/:version.Category/batchRemoveCategory');
+	Route::get('/all','api/:version.Category/getAllCategories');
+	Route::put('/:id/product','api/:version.Category/updateProductList');
+	Route::delete('/:id/product','api/:version.Category/removeProductList');
+	Route::put('/:id','api/:version.Category/updateCategory');
+	Route::delete('/:id','api/:version.Category/removeCategory');
+	Route::post('','api/:version.Category/addCategory');
+});
 
 Route::post(':version/token/user','api/:version.Token/getToken');
 Route::post(':version/token/verify','api/:version.Token/validateToken');
@@ -46,3 +55,7 @@ Route::post(':version/pay/pre_order','api/:version.Pay/getPreOrder');
 Route::post(':version/pay/wxnotify','api/:version.Pay/receiveWxNotify');
 
 Route::get(':version/search/all','api/:version.SearchWord/allSearch');
+
+Route::post(':version/user/wx_info','api/:version.User/updateWxInfo');
+
+Route::post(':version/image/category_topic_img','api/:version.Image/uploadCategoryTopicImage');

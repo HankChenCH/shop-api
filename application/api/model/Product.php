@@ -61,9 +61,24 @@ class Product extends BaseModel
 
 	public static function getProductsByKeyWord($keyword, $page, $size)
 	{
-		$products = self::where('name','LIKE',"%{$keyword}%")
+		$products = self::where('name','like',"%{$keyword}%")
 			->order('id','DESC')
 			->paginate($size,true,['page' => $page]); 
+
+		return $products;
+	}
+
+	public static function getAllBySearch($name, $create_time)
+	{
+		$products = new self;
+		
+		if (!empty($name)) {
+			$products->where('name','like',"%{$name}%");
+		}
+
+		if (count($create_time) == 2) {
+			$products->where('create_time','between',$create_time);
+		}
 
 		return $products;
 	}

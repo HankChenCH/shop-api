@@ -45,6 +45,7 @@ class BaseValidate extends Validate
 
     protected function isNotEmpty($value, $rule='', $data='', $field='')
     {
+        $value = trim($value);
         if (!empty($value)){
             return true;
         }
@@ -81,5 +82,19 @@ class BaseValidate extends Validate
         }
 
         return $paramArray;
+    }
+
+    protected function checkIDs($value)
+    {
+        if (empty($value)){
+            return false;
+        }
+        $values = explode(',',$value);
+        foreach ($values as $id){
+            if(!$this->isPostiveInteger($id)){
+                return false;
+            }
+        }
+        return true;
     }
 }

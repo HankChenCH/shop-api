@@ -25,6 +25,6 @@ class Banner
         if (!$bannerList){
             throw new BannerMissException();
         }
-        echo $bannerList;
+        return $bannerList;
     }
 }

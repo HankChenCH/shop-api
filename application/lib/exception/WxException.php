@@ -11,7 +11,7 @@ namespace app\lib\exception;
 
 class WxException extends BaseException
 {
-    public $code = 401;
+    public $code = 505;
     public $msg = '调用微信接口失败';
     public $errorCode = '999';
 }
