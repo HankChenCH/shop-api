@@ -11,8 +11,12 @@ namespace app\api\model;
 
 class Order extends BaseModel
 {
-	protected $hidden = ['user_id','delete_time','update_time'];
-	protected $autoWriteTimestamp = true;
+	protected $hidden = ['delete_time','update_time'];
+
+	public function user()
+	{
+		return $this->belongsTo('User');
+	}
 
 	public function getSnapItemsAttr($value)
 	{

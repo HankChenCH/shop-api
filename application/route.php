@@ -49,6 +49,7 @@ Route::group(':version/address',function(){
 
 Route::post(':version/order','api/:version.Order/placeOrder');
 Route::get(':version/order/by_user','api/:version.Order/getSummaryByUser');
+Route::get(':version/order/by_admin','api/:version.Order/getSummaryByAdmin');
 Route::get(':version/order/:id','api/:version.Order/getDetail',[],['id'=>'\d+']);
 
 Route::post(':version/pay/pre_order','api/:version.Pay/getPreOrder');

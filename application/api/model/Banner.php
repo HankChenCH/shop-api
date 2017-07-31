@@ -13,6 +13,7 @@ namespace app\api\model;
 class Banner extends BaseModel
 {
     protected $hidden = ['id','update_time','delete_time'];
+    
 	public function items()
 	{
 		return $this->hasMany('BannerItem','banner_id','id');

@@ -10,6 +10,8 @@ namespace app\api\controller\v1;
 
 use app\api\validate\IDMustBePostiveInt;
 use app\api\validate\OrderPlace;
+use app\api\validate\OrderStatus;
+use app\api\validate\PagingParameterAdmin;
 use app\api\validate\PagingParameter;
 use app\api\service\Order as OrderService;
 use app\api\service\Token as TokenService;
@@ -60,11 +62,29 @@ class Order extends BaseController
 			];
 		}
 
-		$data = $orders->hidden(['snap_items','snap_address','prepay_id'])->toArray();
+		$data = $orders->hidden(['user_id','snap_items','snap_address','prepay_id'])->toArray();
 		return [
 			'data' => $data,
 			'currentPage' => $orders->getCurrentPage()
 		];
+	}
+
+	public function getSummaryByAdmin($status, $page=1, $pageSize=10)
+	{
+		(new OrderStatus())->goCheck();
+		(new PagingParameterAdmin())->goCheck();
+
+		$orders = OrderModel::with(['user'])
+					->where('status','=',$status)
+					->paginate($pageSize,false,['page'=>$page]);
+
+		if ($orders->isEmpty()) {
+			throw new OrderException([
+				'msg' => '该状态下暂无订单'
+			]);
+		}
+
+		return $orders;
 	}
 
 	public function getDetail($id)
