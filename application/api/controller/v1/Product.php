@@ -10,6 +10,7 @@ namespace app\api\controller\v1;
 
 use app\api\validate\Count;
 use app\api\validate\IDMustBePostiveInt;
+use app\api\validate\IDConllection;
 use app\api\validate\PagingParameterAdmin;
 use app\api\validate\ProductParameter;
 use app\api\validate\Keyword;
@@ -37,7 +38,8 @@ class Product
 
 	public function getAllInCategory()
 	{
-		$products = ProductModel::all();
+		$products = ProductModel::where('is_on','=','1')
+						->select();
 
 		if ($products->isEmpty()) {
 			throw new ProductException();
@@ -166,5 +168,34 @@ class Product
 		}
 
 		return $product;
+	}
+
+	public function batchUpdateProduct()
+	{
+		(new IDConllection())->goCheck();
+
+		$productValidate = new ProductParameter();
+		$productValidate->scene('pullOnOff');
+		$productValidate->goCheck();
+
+		$data = $productValidate->getDataOnScene(input('put.'));
+
+		$products = new ProductModel;
+		$products->save($data,function($query){
+		    $query->where('id','in',input('put.ids'));
+		});
+
+		if (!$products) {
+			throw new ProductException([
+				'msg' => '批量更新失败'
+			]);
+		}
+
+		return $products;
+	}
+
+	public function batchRemoveProduct()
+	{
+
 	}
 }

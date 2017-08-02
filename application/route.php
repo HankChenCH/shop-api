@@ -25,6 +25,8 @@ Route::group(':version/product',function(){
 	Route::get('/in_category/all','api/:version.Product/getAllInCategory');
 	Route::put('/:id/stock_and_price','api/:version.Product/updateProductStockAndPrice');
 	Route::put('/:id/pullOnOff','api/:version.Product/pullOnOffProduct');
+	Route::put('/batch','api/:version.Product/batchUpdateProduct');
+	Route::delete('/batch','api/:version.Product/batchRemoveProduct');
 	Route::delete('/:id','api/:version.Product/removeProduct');
 });
 
