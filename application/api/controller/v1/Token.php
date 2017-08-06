@@ -10,8 +10,12 @@ namespace app\api\controller\v1;
 
 use app\api\service\Token as TokenService;
 use app\api\service\UserToken;
+use app\api\service\AdminToken;
+use app\api\model\Admin as AdminModel;
 use app\api\validate\TokenGet;
-use app\lib\excetion\ParameterExcetion;
+use app\api\validate\AdminLogin;
+use app\lib\exception\ParameterExcetion;
+use app\lib\exception\TokenException;
 
 class Token
 {
@@ -41,13 +45,30 @@ class Token
 
     public function getAdminToken()
     {
-        header("Access-Control-Allow-Origin: *"); 
-    	$token = UserToken::generateToken();
+        (new AdminLogin())->goCheck();
+
+        $data = input('post.');
+        
+        $admin = AdminModel::login($data['login_name'], $data['password']);
+
+    	$at = new AdminToken();
+        $token = $at->get($admin);
     	return [
-    		'data' => [
-    			'token' => $token,
-    			'exprie_in' => time() + 7200 
-    		]
+			'token' => $token,
+            'username' => $admin['true_name'],
+			'exprie_in' => time() + 7200 
     	];
+    }
+
+    public function logOnAdminToken()
+    {
+        $token = TokenService::removeCurrentToken();
+        if (!$token) {
+            throw new TokenException([
+                'msg' => '用户注销失败'
+            ]);
+        }
+
+        return $token;
     }
 }

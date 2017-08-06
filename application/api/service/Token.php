@@ -57,6 +57,14 @@ class Token
 		return $uid;
 	}
 
+	public static function removeCurrentToken()
+	{
+		$token = Request::instance()
+			->header('token');
+		$vars = Cache::pull($token);
+		return $vars;
+	}
+
 	public static function isValidOperate($checkUID)
     {
         if (!$checkUID){
@@ -69,6 +77,23 @@ class Token
         }
 
         return false;
+    }
+
+    protected function saveToCache($cacheValue)
+    {
+        $key = self::generateToken();
+        $value = json_encode($cacheValue);
+        $expire_in = config('setting.token_expire_in');
+
+        $result = cache($key,$value,$expire_in);
+        if (!$result) {
+            throw new TokenException([
+                    'msg' => '服务器缓存异常',
+                    'errorCode' => 10005
+                ]);
+        }
+
+        return $key;
     }
 
 	public static function needPrimaryScope()

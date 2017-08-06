@@ -40,9 +40,12 @@ Route::group(':version/category',function(){
 	Route::post('','api/:version.Category/addCategory');
 });
 
-Route::post(':version/token/user','api/:version.Token/getToken');
-Route::post(':version/token/verify','api/:version.Token/validateToken');
-Route::post(':version/token/admin','api/:version.Token/getAdminToken');
+Route::group(':version/token',function (){
+	Route::post('/user','api/:version.Token/getToken');
+	Route::post('/verify','api/:version.Token/validateToken');
+	Route::post('/admin','api/:version.Token/getAdminToken');
+	Route::delete('/admin','api/:version.Token/logOnAdminToken');
+});
 
 Route::group(':version/address',function(){
 	Route::post('','api/:version.Address/createOrUpdateAddress');
@@ -61,4 +64,11 @@ Route::get(':version/search/all','api/:version.SearchWord/allSearch');
 
 Route::post(':version/user/wx_info','api/:version.User/updateWxInfo');
 
-Route::post(':version/image/category_topic_img','api/:version.Image/uploadCategoryTopicImage');
+Route::group(':version/admin',function (){
+	Route::post('','api/:version.Admin/createAdmin');
+});
+
+Route::group(':version/image', function (){
+	Route::post('/category_topic_img','api/:version.Image/uploadCategoryTopicImage');
+	Route::post('/product_main_img','api/:version.Image/uploadProductMainImage');
+});

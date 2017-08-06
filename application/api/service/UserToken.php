@@ -59,23 +59,6 @@ class UserToken extends Token
         return $this->saveToCache($cacheValue);
     }
 
-    private function saveToCache($cacheValue)
-    {
-        $key = self::generateToken();
-        $value = json_encode($cacheValue);
-        $expire_in = config('setting.token_expire_in');
-
-        $result = cache($key,$value,$expire_in);
-        if (!$result) {
-            throw new TokenException([
-                    'msg' => '服务器缓存异常',
-                    'errorCode' => 10005
-                ]);
-        }
-
-        return $key;
-    }
-
     private function prepareCacheValue($wxResult,$uid)
     {
         $cacheValue = $wxResult;
