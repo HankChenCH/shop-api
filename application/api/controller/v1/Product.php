@@ -16,6 +16,7 @@ use app\api\validate\ProductParameter;
 use app\api\validate\Keyword;
 use app\api\model\Product as ProductModel;
 use app\api\model\SearchWord as SearchWordModel;
+use app\lib\enum\SaveFileFromEnum;
 use app\lib\exception\ProductException;
 use app\lib\exception\ParameterException;
 
@@ -111,6 +112,28 @@ class Product
 		return $products;
 	}
 
+	public function createProductBase()
+	{
+		$validate = new ProductParameter();
+		$validate->scene('baseCreate');
+		$validate->goCheck();
+
+		$data = $validate->getDataOnScene(input('post.'));
+		if ($data['from'] === SaveFileFromEnum::LOCAL) {
+			$data['main_img_url'] = str_replace(config('setting.img_prefix'), '', $data['main_img_url']);
+		}
+
+		$product = ProductModel::create($data);
+
+		if (!$product) {
+			throw new ProductException([
+				'msg' => '创建商品失败'
+			]);
+		}
+
+		return $product;
+	}
+
 	public function updateProductStockAndPrice($id)
 	{
 		(new IDMustBePostiveInt())->goCheck();
@@ -196,6 +219,17 @@ class Product
 
 	public function batchRemoveProduct()
 	{
+		(new IDConllection())->goCheck();
 
+		$ids = input('delete.ids');
+		$products = ProductModel::destroy($ids);
+
+		if (!$products) {
+			throw new ProductException([
+				'msg' => '删除商品失败'
+			]);
+		}
+
+		return $products;
 	}
 }

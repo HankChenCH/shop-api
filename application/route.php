@@ -23,6 +23,7 @@ Route::group(':version/product',function(){
 	Route::get('/by_category','api/:version.Product/getAllByCategory');
 	Route::get('/search','api/:version.Product/getSearchByKeyWord');
 	Route::get('/in_category/all','api/:version.Product/getAllInCategory');
+	Route::post('','api/:version.Product/createProductBase');
 	Route::put('/:id/stock_and_price','api/:version.Product/updateProductStockAndPrice');
 	Route::put('/:id/pullOnOff','api/:version.Product/pullOnOffProduct');
 	Route::put('/batch','api/:version.Product/batchUpdateProduct');

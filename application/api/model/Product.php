@@ -11,7 +11,7 @@ namespace app\api\model;
 
 class Product extends BaseModel
 {
-	protected $hidden = ['pivot','create_time','update_time','delete_time','img_id','from','category_id'];
+	protected $hidden = ['pivot','update_time','delete_time','img_id','from','category_id'];
 
 	public function getMainImgUrlAttr($value,$data)
 	{
