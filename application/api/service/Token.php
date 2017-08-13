@@ -51,6 +51,12 @@ class Token
 		}
 	}
 
+	public static function getCurrentNickName()
+	{
+		$nickName = self::getCurrentTokenVar('nickname');
+		return $nickName;
+	}
+
 	public static function getCurrentUid()
 	{
 		$uid = self::getCurrentTokenVar('uid');

@@ -119,8 +119,11 @@ class Product
 		$validate->goCheck();
 
 		$data = $validate->getDataOnScene(input('post.'));
+		
 		if ($data['from'] === SaveFileFromEnum::LOCAL) {
 			$data['main_img_url'] = str_replace(config('setting.img_prefix'), '', $data['main_img_url']);
+		} elseif ($data['from'] === SaveFileFromEnum::QINIU) {
+			$data['main_img_url'] = str_replace(config('setting.qiniu_prefix'), '', $data['main_img_url']);
 		}
 
 		$product = ProductModel::create($data);
@@ -128,6 +131,41 @@ class Product
 		if (!$product) {
 			throw new ProductException([
 				'msg' => '创建商品失败'
+			]);
+		}
+
+		return $product;
+	}
+
+	public function updateProductBase($id)
+	{
+		(new IDMustBePostiveInt())->goCheck();
+
+		$validate = new ProductParameter();
+		$validate->scene('baseUpdate');
+		$validate->goCheck();
+
+		$data = $validate->getDataOnScene(input('put.'));
+		$imgData = input('put.');
+		
+		if (isset($imgData['from'])) {
+			if ($imgData['from'] === SaveFileFromEnum::LOCAL) {
+				$imgData['main_img_url'] = str_replace(config('setting.img_prefix'), '', $imgData['main_img_url']);
+			} elseif ($imgData['from'] === SaveFileFromEnum::QINIU) {
+				$imgData['main_img_url'] = str_replace(config('setting.qiniu_prefix'), '', $imgData['main_img_url']);
+			}
+			
+			$data['from'] = $imgData['from'];
+			$data['main_img_url'] = $imgData['main_img_url'];
+			$data['img_id'] = $imgData['img_id'];
+		}
+
+		$product = new ProductModel();
+		$product->save($data, ['id' => $id]);
+
+		if (!$product) {
+			throw new ProductException([
+				'msg' => '更新商品基础信息失败'
 			]);
 		}
 
@@ -226,7 +264,7 @@ class Product
 
 		if (!$products) {
 			throw new ProductException([
-				'msg' => '删除商品失败'
+				'msg' => '批量删除商品失败'
 			]);
 		}
 

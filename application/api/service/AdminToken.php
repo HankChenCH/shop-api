@@ -15,23 +15,21 @@ class AdminToken extends Token
 {
 	public function get($admin)
     {
-
-        if ($admin) {
-            $uid = $admin['id'];
-        }
-        else{
+        if (!$admin) {
             throw new AdminException([
             	'msg' => '登录错误, 用户名不存在或密码错误!'
             ]);
         }
 
-        $cacheValue = $this->prepareCacheValue($uid);
+        $cacheValue = $this->prepareCacheValue($admin);
         return $this->saveToCache($cacheValue);
     }
 
-    private function prepareCacheValue($uid)
+    private function prepareCacheValue($adminUser)
     {
-        $cacheValue['uid'] = $uid;
+        $cacheValue['uid'] = $adminUser['id'];
+        $cacheValue['username'] = $adminUser['user_name'];
+        $cacheValue['nickname'] = $adminUser['true_name'];
         $cacheValue['scope'] = ScopeEnum::Super;
         return $cacheValue;
     }

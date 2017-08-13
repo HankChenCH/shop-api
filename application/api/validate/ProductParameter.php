@@ -24,6 +24,7 @@ class ProductParameter extends BaseValidate
 
 	protected $scene = [
 		'baseCreate' => ['name','summary','from','price','stock','main_img_url','img_id','is_on'],
+		'baseUpdate' => ['name','summary','price','stock'],
         'updateStockAndPrice' => ['price','stock'],
         'pullOnOff' => ['is_on'],
 	];

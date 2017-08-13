@@ -14,7 +14,7 @@ use think\Route;
 Route::get(':version/banner/:id',"api/:version.Banner/getBanner");
 
 Route::get(':version/theme',"api/:version.Theme/getSimpleList");
-Route::get(':version/theme/:id','api/:version.Theme/getComplexOne');
+Route::get(':version/theme/:id','api/:version.Theme/getComplexOne',[],['id'=>'\d+']);
 
 Route::group(':version/product',function(){
 	Route::get('','api/:version.Product/getAll');
@@ -24,11 +24,12 @@ Route::group(':version/product',function(){
 	Route::get('/search','api/:version.Product/getSearchByKeyWord');
 	Route::get('/in_category/all','api/:version.Product/getAllInCategory');
 	Route::post('','api/:version.Product/createProductBase');
+	Route::put('/:id','api/:version.Product/updateProductBase',[],['id'=>'\d+']);
 	Route::put('/:id/stock_and_price','api/:version.Product/updateProductStockAndPrice');
 	Route::put('/:id/pullOnOff','api/:version.Product/pullOnOffProduct');
 	Route::put('/batch','api/:version.Product/batchUpdateProduct');
 	Route::delete('/batch','api/:version.Product/batchRemoveProduct');
-	Route::delete('/:id','api/:version.Product/removeProduct');
+	Route::delete('/:id','api/:version.Product/removeProduct',[],['id'=>'\d+']);
 });
 
 Route::group(':version/category',function(){
@@ -36,8 +37,8 @@ Route::group(':version/category',function(){
 	Route::get('/all','api/:version.Category/getAllCategories');
 	Route::put('/:id/product','api/:version.Category/updateProductList');
 	Route::delete('/:id/product','api/:version.Category/removeProductList');
-	Route::put('/:id','api/:version.Category/updateCategory');
-	Route::delete('/:id','api/:version.Category/removeCategory');
+	Route::put('/:id','api/:version.Category/updateCategory',[],['id'=>'\d+']);
+	Route::delete('/:id','api/:version.Category/removeCategory',[],['id'=>'\d+']);
 	Route::post('','api/:version.Category/addCategory');
 });
 
@@ -57,6 +58,9 @@ Route::post(':version/order','api/:version.Order/placeOrder');
 Route::get(':version/order/by_user','api/:version.Order/getSummaryByUser');
 Route::get(':version/order/by_admin','api/:version.Order/getSummaryByAdmin');
 Route::get(':version/order/:id','api/:version.Order/getDetail',[],['id'=>'\d+']);
+Route::put(':version/order/by_admin/price/:id','api/:version.Order/updatePrice',[],['id'=>'\d+']);
+Route::delete(':version/order/by_admin/batch','api/:version.Order/batchRemoveOrder');
+Route::delete(':version/order/by_admin/:id','api/:version.Order/removeOrder',[],['id'=>'\d+']);
 
 Route::post(':version/pay/pre_order','api/:version.Pay/getPreOrder');
 Route::post(':version/pay/wxnotify','api/:version.Pay/receiveWxNotify');
