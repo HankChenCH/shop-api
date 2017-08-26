@@ -11,5 +11,5 @@ namespace app\api\model;
 
 class ProductDetail extends BaseModel
 {
-	protected $hidden = ['id','delete_time','update_time'];
+	protected $hidden = ['id','create_time','delete_time','update_time'];
 }

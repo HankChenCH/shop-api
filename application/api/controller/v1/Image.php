@@ -39,4 +39,17 @@ class Image
 
         return $image;
     }
+
+    public function uploadProductDetailImage()
+    {
+        $image = ImageService::uploadToQiNiu('detailImage', 'product_detail', ['size'=>156780,'ext'=>'jpg,png']);
+
+        if (!$image){
+            throw new ImageException([
+            'msg' => '保存图片失败'
+            ]);
+        }
+
+        return $image;
+    }
 }

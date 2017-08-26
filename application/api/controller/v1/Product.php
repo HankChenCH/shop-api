@@ -14,6 +14,7 @@ use app\api\validate\IDConllection;
 use app\api\validate\PagingParameterAdmin;
 use app\api\validate\ProductParameter;
 use app\api\validate\Keyword;
+use app\api\service\Product as ProductService;
 use app\api\model\Product as ProductModel;
 use app\api\model\SearchWord as SearchWordModel;
 use app\lib\enum\SaveFileFromEnum;
@@ -166,6 +167,23 @@ class Product
 		if (!$product) {
 			throw new ProductException([
 				'msg' => '更新商品基础信息失败'
+			]);
+		}
+
+		return $product;
+	}
+
+	public function createOrUpdateDetail($id)
+	{
+		(new IDMustBePostiveInt())->goCheck();
+
+		$data = input('put.');
+
+		$product = ProductService::createOrUpdateDetail($id, $data);
+
+		if (!$product) {
+			throw new ProductException([
+				'msg' => '更新商品详情失败'	
 			]);
 		}
 
