@@ -60,6 +60,22 @@ class Token
     	];
     }
 
+    public function reAdminToken()
+    {
+        $uid = TokenService::getCurrentUid();
+
+        $admin = AdminModel::find($uid);
+
+        $at = new AdminToken();
+        $token = $at->get($admin);
+
+        return [
+            'token' => $token,
+            'username' => $admin['true_name'],
+            'exprie_in' => time() + 7200 
+        ];
+    }
+
     public function logOnAdminToken()
     {
         $token = TokenService::removeCurrentToken();

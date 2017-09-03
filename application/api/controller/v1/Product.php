@@ -173,21 +173,38 @@ class Product
 		return $product;
 	}
 
-	public function createOrUpdateDetail($id)
+	public function updateDetail($id)
 	{
 		(new IDMustBePostiveInt())->goCheck();
 
 		$data = input('put.');
 
-		$product = ProductService::createOrUpdateDetail($id, $data);
+		$productDetail = ProductService::createOrUpdateDetail($id, $data);
 
-		if (!$product) {
+		if (!$productDetail) {
 			throw new ProductException([
 				'msg' => '更新商品详情失败'	
 			]);
 		}
 
-		return $product;
+		return $productDetail;
+	}
+
+	public function updateProperties($id)
+	{
+		(new IDMustBePostiveInt())->goCheck();
+
+		$data = input('put.properties/a');
+
+		$productProps = ProductService::createOrUpdateProperties($id, $data);
+
+		if (!$productProps) {
+			throw new ProductException([
+				'msg' => '更新商品规格参数失败'	
+			]);
+		}
+
+		return $productProps;
 	}
 
 	public function updateProductStockAndPrice($id)

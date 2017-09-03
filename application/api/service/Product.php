@@ -10,6 +10,7 @@ namespace app\api\service;
 
 use app\api\model\Product as ProductModel;
 use app\api\model\ProductDetail;
+use app\api\model\ProductProperty;
 
 class Product
 {
@@ -25,6 +26,21 @@ class Product
 		}
 
 		return $product;
+	}
+
+	public static function createOrUpdateProperties($productID, $data)
+	{
+		//真实删除产品所有属性然后批量增加，达到修改的目的
+		$productProps = ProductProperty::destroy(['product_id' => $productID], true);
+
+		array_walk($data, function (&$value) use ($productID) {
+			$value['product_id'] = $productID;
+		});
+
+		$productProps = new ProductProperty;
+		$pp = $productProps->saveAll($data);
+
+		return $pp;
 	}
 
 	private static function createDetail($productID, $data)

@@ -79,6 +79,7 @@ class Order extends BaseController
 
 		$orders = OrderModel::with(['user'])
 					->where('status','=',$status)
+					->order('create_time desc')
 					->paginate($pageSize,false,['page'=>$page]);
 
 		if ($orders->isEmpty()) {

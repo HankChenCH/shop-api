@@ -26,7 +26,8 @@ Route::group(':version/product',function(){
 	Route::post('','api/:version.Product/createProductBase');
 	Route::put('/:id','api/:version.Product/updateProductBase',[],['id'=>'\d+']);
 	Route::put('/:id/stock_and_price','api/:version.Product/updateProductStockAndPrice');
-	Route::put('/:id/detail','api/:version.Product/createOrUpdateDetail');
+	Route::put('/:id/detail','api/:version.Product/updateDetail');
+	Route::put('/:id/properties','api/:version.Product/updateProperties');
 	Route::put('/:id/pullOnOff','api/:version.Product/pullOnOffProduct');
 	Route::put('/batch','api/:version.Product/batchUpdateProduct');
 	Route::delete('/batch','api/:version.Product/batchRemoveProduct');
@@ -46,6 +47,7 @@ Route::group(':version/category',function(){
 Route::group(':version/token',function (){
 	Route::post('/user','api/:version.Token/getToken');
 	Route::post('/verify','api/:version.Token/validateToken');
+	Route::post('/admin/relogin','api/:version.Token/reAdminToken');
 	Route::post('/admin','api/:version.Token/getAdminToken');
 	Route::delete('/admin','api/:version.Token/logOnAdminToken');
 });
@@ -77,5 +79,5 @@ Route::group(':version/admin',function (){
 Route::group(':version/image', function (){
 	Route::post('/category_topic_img','api/:version.Image/uploadCategoryTopicImage');
 	Route::post('/product_main_img','api/:version.Image/uploadProductMainImage');
-	Route::post('/product_detail_image','api/:version.Image/uploadProductDetailImage');
+	Route::post('/product_detail_img','api/:version.Image/uploadProductDetailImage');
 });

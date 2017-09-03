@@ -44,6 +44,7 @@ class Pay
 
         //直接使用订单价格
         $order = OrderModel::where('id','=',$this->orderID)->find();
+        return $order;
 
         return $this->makeWxPreOrder($order['total_price']);
     }
