@@ -35,4 +35,12 @@ class Theme extends BaseModel
 
         return $themes;
     }
+
+    public static function getProducts($id)
+    {
+        $themes = self::with('products')
+            ->find($id);
+
+        return $themes;
+    }
 }

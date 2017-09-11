@@ -7,8 +7,9 @@
  */
 
 return [
-    'app_id' => 'wx9bcd8fefab1193aa',
-    'app_secret' => 'b2bf8b177fee538c0711dfa04e5ee3e3',
+    'app_id' => 'wxe0ba8eb7b92481ee',
+    'app_secret' => 'bf100e4cac89f1ce0ee30bfdb71d0b52',
+    'shop_name' => '探小店',
     'login_url' => 'https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code',
-    'pay_callback' => 'https:://www.onegledog.cn/v1/pay/wxnotify'
+    'pay_callback' => 'https://www.onegledog.cn/v1/pay/wxnotify'
 ];

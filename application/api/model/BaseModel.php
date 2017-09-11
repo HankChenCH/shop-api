@@ -16,6 +16,46 @@ class BaseModel extends Model
 {
 	use SoftDelete;
 	protected $deleteTime = 'delete_time';
+
+    public function getAllBySearch($search)
+    {
+        foreach ($search as $key => $value) {
+
+            if (empty($value)) {
+                continue;
+            }
+
+            switch ($key) {
+                case 'name':
+                case 'true_name':
+                case 'nick_name':
+                    $this->where($key, 'like', "%{$value}%");
+
+                    break;
+
+                case 'create_time': 
+
+                    if (is_array($value) && !is_numeric($value[0])) {
+                        array_walk($value, function(&$v){
+                            $v = strtotime($v);
+                        });
+                    } 
+
+                    $this->where($key,'between',$value);
+
+                    break;
+
+                default:
+
+                    $this->where($key, '=', $value);
+
+                    break;
+            }
+        }
+
+        $this->order('create_time desc');
+        return $this;
+    }
 	
     protected function imgPrefix($value,$data)
     {

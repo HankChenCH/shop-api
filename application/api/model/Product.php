@@ -35,7 +35,8 @@ class Product extends BaseModel
 
 	public static function getMostRecent($count)
 	{
-		$products = self::limit($count)
+		$products = self::where('is_on', '=', '1')
+			->limit($count)
 		    ->order('create_time desc')
 		    ->select();
 
@@ -74,20 +75,27 @@ class Product extends BaseModel
 		return $products;
 	}
 
-	public static function getAllBySearch($name, $create_time)
-	{
-		$products = new self;
+	// public static function getAllBySearch($name, $create_time)
+	// {
+	// 	$products = new self;
 		
-		if (!empty($name)) {
-			$products->where('name','like',"%{$name}%");
-		}
+	// 	if (!empty($name)) {
+	// 		$products->where('name','like',"%{$name}%");
+	// 	}
 
-		if (count($create_time) == 2) {
-			$products->where('create_time','between',$create_time);
-		}
+	// 	if (count($create_time) == 2) {
 
-		$products->order('create_time desc');
+	// 		if (!is_numeric($create_time[0])) {
+ //                array_walk($create_time, function(&$v){
+ //                    $v = strtotime($v);
+ //                });
+ //            }
 
-		return $products;
-	}
+	// 		$products->where('create_time','between',$create_time);
+	// 	}
+
+	// 	$products->order('create_time desc');
+
+	// 	return $products;
+	// }
 }

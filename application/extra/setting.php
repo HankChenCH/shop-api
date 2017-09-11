@@ -9,5 +9,7 @@
 return [
     'img_prefix' => 'http://api.c.cn/images',
     'qiniu_prefix' => 'https://image.onegledog.cn',
-    'token_expire_in' => 7200
+    'token_expire_in' => 7200,
+    'express_price' => 20,
+    'express_limit' => 60,
 ];

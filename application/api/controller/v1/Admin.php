@@ -9,11 +9,26 @@
 namespace app\api\controller\v1;
 
 use app\api\validate\AdminNew;
+use app\api\validate\PagingParameterAdmin;
 use app\api\model\Admin as AdminModel;
 use app\lib\exception\AdminException;
 
 class Admin extends BaseController
 {
+	public function getAll($truename='', $createTime=array(), $page=1, $pageSize=10)
+	{
+		(new PagingParameterAdmin())->goCheck();
+
+		$admins = (new AdminModel())->getAllBySearch(['true_name' => $truename, 'create_time' => $createTime])
+						->paginate($pageSize,false,['page' => $page]);
+
+		if ($admins->isEmpty()) {
+			throw new ProductException();
+		}
+
+		return $admins;
+	}
+
 	public function createAdmin()
 	{
 		$validate = new AdminNew();

@@ -69,7 +69,7 @@ class Order
 	    	$orderLog = OrderLogModel::create([
 	    		'order_id' => $id,
 	    		'type' => OrderLogTypeEnum::CHANGEPRICE,
-	    		'log' => $nickName . '于' . date('Y-m-d H:i:s') . '更改订单价格为：' . $data['total_price'],
+	    		'log' => $nickName . '于' . date('Y-m-d H:i:s') . '更改订单价格为：' . $data['discount_price'] . '元',
 	    		'reason' => $data['reason']
 	    	]);
 
@@ -163,7 +163,7 @@ class Order
 			->find();
 
 		if (!$userAddress) {
-			throw new UserException([
+			throw new OrderException([
 				'msg' => '用户收货地址不存在，下单失败',
 				'errorCode' => 60001
 			]);

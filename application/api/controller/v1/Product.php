@@ -38,9 +38,10 @@ class Product
 		return $products;
 	}
 
-	public function getAllInCategory()
+	public function getAllList()
 	{
 		$products = ProductModel::where('is_on','=','1')
+						->order('create_time desc')
 						->select();
 
 		if ($products->isEmpty()) {
@@ -54,7 +55,7 @@ class Product
 	{
 		(new PagingParameterAdmin())->goCheck();
 
-		$products = ProductModel::getAllBySearch($title, $createTime)
+		$products = (new ProductModel())->getAllBySearch(['name' => $title, 'create_time' => $createTime])
 						->paginate($pageSize,false,['page' => $page]);
 
 		if ($products->isEmpty()) {
