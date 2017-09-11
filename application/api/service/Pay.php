@@ -42,7 +42,11 @@ class Pay
             return $status;
         }
 
-        return $this->makeWxPreOrder($status['orderPrice']);
+        //直接使用订单价格
+        $order = OrderModel::where('id','=',$this->orderID)->find();
+        return $order;
+
+        return $this->makeWxPreOrder($order['total_price']);
     }
 
     private function makeWxPreOrder($totalPrice)

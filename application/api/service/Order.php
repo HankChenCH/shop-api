@@ -10,9 +10,13 @@ namespace app\api\service;
 
 use app\api\model\Product;
 use app\api\model\Order as OrderModel;
+use app\api\model\OrderLog as OrderLogModel;
 use app\api\model\UserAddress;
 use app\api\model\OrderProduct;
 use app\lib\exception\OrderException;
+use app\lib\enum\OrderLogTypeEnum;
+use think\Log;
+use think\Db;
 
 class Order
 {
@@ -51,6 +55,38 @@ class Order
 
         $status = $this->getOrderStatus();
         return $status;
+    }
+
+    public static function changePrice($data, $nickName, $id)
+    {
+    	Db::startTrans();
+
+    	try{
+	    	$order = OrderModel::get($id)
+	    				->allowField(true)
+	    				->save($data);
+
+	    	$orderLog = OrderLogModel::create([
+	    		'order_id' => $id,
+	    		'type' => OrderLogTypeEnum::CHANGEPRICE,
+	    		'log' => $nickName . '于' . date('Y-m-d H:i:s') . '更改订单价格为：' . $data['total_price'],
+	    		'reason' => $data['reason']
+	    	]);
+
+	    	Db::commit();
+	    	return $order;
+    	}catch(\Exception $e){
+    		Db::rollback();
+    		Log::init([
+                'type'=>'File',
+                'path'=>LOG_PATH,
+                'level'=>['error']
+            ]);
+			Log::record($e,'error');
+			throw new OrderException([
+				'msg' => '订单价格修改失败'
+			]);
+    	}
     }
 
 	private function createOrder($snap)

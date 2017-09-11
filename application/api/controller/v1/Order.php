@@ -9,14 +9,17 @@
 namespace app\api\controller\v1;
 
 use app\api\validate\IDMustBePostiveInt;
+use app\api\validate\IDConllection;
 use app\api\validate\OrderPlace;
 use app\api\validate\OrderStatus;
+use app\api\validate\OrderUpdate;
 use app\api\validate\PagingParameterAdmin;
 use app\api\validate\PagingParameter;
 use app\api\service\Order as OrderService;
 use app\api\service\Token as TokenService;
 use app\api\model\Order as OrderModel;
 use app\lib\exception\OrderException;
+
 
 class Order extends BaseController
 {
@@ -76,6 +79,7 @@ class Order extends BaseController
 
 		$orders = OrderModel::with(['user'])
 					->where('status','=',$status)
+					->order('create_time desc')
 					->paginate($pageSize,false,['page'=>$page]);
 
 		if ($orders->isEmpty()) {
@@ -99,5 +103,57 @@ class Order extends BaseController
 		}
 
 		return $orderDetail->hidden(['prepay_id']);
+	}
+
+	public function updatePrice($id)
+	{
+		(new IDMustBePostiveInt())->goCheck();
+
+		$validate = new OrderUpdate();
+		$validate->scene('changePrice');
+		$validate->goCheck();
+
+		$nickName = TokenService::getCurrentNickName();
+
+		$data = $validate->getDataOnScene(input('put.'));
+
+		$order = OrderService::changePrice($data,$nickName,$id);
+
+		if (!$order) {
+			throw new OrderException();
+		}
+
+		return $order;
+	}
+
+	public function removeOrder($id)
+	{
+		(new IDMustBePostiveInt())->goCheck();
+
+		$order = OrderModel::destroy($id);
+
+		if (!$order) {
+			throw new OrderException([
+				'msg' => '删除订单失败'
+			]);
+		}
+
+		return $order;
+	}
+
+	public function batchRemoveOrder()
+	{
+		(new IDConllection())->goCheck();
+
+		$ids = input('delete.ids');
+		$orders = OrderModel::destroy($ids);
+
+		if (!$orders) {
+			throw new OrderException([
+				'msg' => '批量删除订单失败'
+			]);
+		}
+
+		return $orders;
 	}
 }

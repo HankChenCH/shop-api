@@ -8,5 +8,6 @@
 
 return [
     'img_prefix' => 'https://www.onegledog.cn/images',
+    'qiniu_prefix' => 'https://image.onegledog.cn',
     'token_expire_in' => 7200
 ];
