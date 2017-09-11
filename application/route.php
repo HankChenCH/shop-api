@@ -87,6 +87,9 @@ Route::group(':version/user', function (){
 Route::group(':version/admin',function (){
 	Route::get('','api/:version.Admin/getAll');
 	Route::post('','api/:version.Admin/createAdmin');
+	Route::put('/:id','api/:version.Admin/updateAdmin');
+	Route::delete('/:id','api/:version.Admin/removeAdmin');
+	Route::delete('/batch','api/:version.Admin/batchRemoveAdmin');
 });
 
 Route::group(':version/image', function (){

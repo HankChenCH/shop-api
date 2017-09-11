@@ -15,7 +15,7 @@ class User extends BaseController
 	{
 		(new PagingParameterAdmin())->goCheck();
 
-		$users = (new UserModel())->getAllBySearch(['nick_name' => $nickname, 'create_time' => $createTime])
+		$users = UserModel::getAllBySearch(['nick_name' => $nickname, 'create_time' => $createTime])
 						->paginate($pageSize,false,['page' => $page]);
 
 		if ($users->isEmpty()) {

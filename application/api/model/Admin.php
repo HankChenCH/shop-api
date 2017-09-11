@@ -12,7 +12,7 @@ namespace app\api\model;
 
 class Admin extends BaseModel
 {
-    protected $hidden = ['id','password','update_time','delete_time'];
+    protected $hidden = ['password','update_time','delete_time'];
 
     public static function login($loginName, $password)
     {

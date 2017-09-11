@@ -17,8 +17,10 @@ class BaseModel extends Model
 	use SoftDelete;
 	protected $deleteTime = 'delete_time';
 
-    public function getAllBySearch($search)
+    public static function getAllBySearch($search)
     {
+        $class = get_called_class();
+        $models = (new $class);
         foreach ($search as $key => $value) {
 
             if (empty($value)) {
@@ -29,7 +31,7 @@ class BaseModel extends Model
                 case 'name':
                 case 'true_name':
                 case 'nick_name':
-                    $this->where($key, 'like', "%{$value}%");
+                    $models->where($key, 'like', "%{$value}%");
 
                     break;
 
@@ -41,20 +43,20 @@ class BaseModel extends Model
                         });
                     } 
 
-                    $this->where($key,'between',$value);
+                    $models->where($key,'between',$value);
 
                     break;
 
                 default:
 
-                    $this->where($key, '=', $value);
+                    $models->where($key, '=', $value);
 
                     break;
             }
         }
 
-        $this->order('create_time desc');
-        return $this;
+        $models->order('create_time desc');
+        return $models;
     }
 	
     protected function imgPrefix($value,$data)

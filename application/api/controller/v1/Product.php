@@ -55,7 +55,7 @@ class Product
 	{
 		(new PagingParameterAdmin())->goCheck();
 
-		$products = (new ProductModel())->getAllBySearch(['name' => $title, 'create_time' => $createTime])
+		$products = ProductModel::getAllBySearch(['name' => $title, 'create_time' => $createTime])
 						->paginate($pageSize,false,['page' => $page]);
 
 		if ($products->isEmpty()) {

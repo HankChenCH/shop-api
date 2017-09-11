@@ -9,6 +9,8 @@
 namespace app\api\controller\v1;
 
 use app\api\validate\AdminNew;
+use app\api\validate\IDMustBePostiveInt;
+use app\api\validate\IDConllection;
 use app\api\validate\PagingParameterAdmin;
 use app\api\model\Admin as AdminModel;
 use app\lib\exception\AdminException;
@@ -19,7 +21,7 @@ class Admin extends BaseController
 	{
 		(new PagingParameterAdmin())->goCheck();
 
-		$admins = (new AdminModel())->getAllBySearch(['true_name' => $truename, 'create_time' => $createTime])
+		$admins = AdminModel::getAllBySearch(['true_name' => $truename, 'create_time' => $createTime])
 						->paginate($pageSize,false,['page' => $page]);
 
 		if ($admins->isEmpty()) {
@@ -47,5 +49,42 @@ class Admin extends BaseController
 		}
 
 		return $admin; 
+	}
+
+	public function updateAdmin()
+	{
+
+	}
+
+	public function removeAdmin($id)
+	{
+		(new IDMustBePostiveInt())->goCheck();
+
+		$admin = AdminModel::destroy($id);
+
+		if (!$admin) {
+			throw new AdminException([
+				'msg' => '删除管理员失败'
+			]);
+		}
+
+		return $admin;
+	}
+
+	public function batchRemoveAdmin()
+	{
+		(new IDConllection())->goCheck();
+
+		$ids = input('delete.ids');
+
+		$admins = AdminModel::destroy($ids);
+
+		if (!$admins) {
+			throw new AdminException([
+				'msg' => '批量删除管理员失败'
+			]);
+		}
+
+		return $admins;
 	}
 }
