@@ -54,6 +54,29 @@ class Admin extends BaseController
 	public function updateAdmin()
 	{
 
+
+	}
+
+	public function disOrEnable($id)
+	{
+		(new IDMustBePostiveInt())->goCheck();
+
+		$validate = new AdminNew();
+		$validate->scene('updateStatus');
+		$validate->goCheck();
+
+		$data = $validate->getDataOnScene(input('put.'));
+
+		$admin = AdminModel::get($id)
+					->save($data);
+
+		if (!$admin) {
+			throw new AdminException([
+				'msg' => '更新管理员状态失败'
+			]);
+		}
+
+		return $admin;
 	}
 
 	public function removeAdmin($id)

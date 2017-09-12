@@ -16,10 +16,12 @@ class AdminNew extends BaseValidate
 		'password' => 'require|isNotEmpty|min:6',
 		'repassword' => 'require|isNotEmpty|isEqualPassword',
 		'true_name' => 'require|isNotEmpty',
+		'state' => 'require|number|between:0,1',
 	];
 
 	protected $scene = [
-        'create' => ['user_name','password','repassword','true_name']
+        'create' => ['user_name','password','repassword','true_name'],
+        'updateStatus' => ['state'],
 	];
 
 	protected function isEqualPassword($value, $rule='', $data='', $field='')
