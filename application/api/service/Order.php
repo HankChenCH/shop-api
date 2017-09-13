@@ -58,7 +58,7 @@ class Order
         $oProducts = OrderProduct::where('order_id','=',$orderID)->select();
         $order = OrderModel::where('id','=',$orderID)->find();
         $this->oProducts = $oProducts;
-        $this->oExpress = $order->snap_express['express_price'];
+        $this->oExpress = $order->snap_express->express_price;
         $this->products = $this->getProductsByOrder();
 
         $status = $this->getOrderStatus();
