@@ -43,11 +43,12 @@ class Order extends BaseController
 		*/
 		(new OrderPlace())->goCheck();
 
-		$products = input('post.products/a');
+		$products = input('post.orderProducts/a');
+		$express = input('post.orderExpress');
 		$uid = TokenService::getCurrentUid();
 
 		$order = new OrderService();
-		$status = $order->place($uid,$products);
+		$status = $order->place($uid,$products,$express);
 
 		return $status;
 	}

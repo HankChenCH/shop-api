@@ -7,7 +7,8 @@ use app\lib\exception\ProductException;
 class OrderPlace extends BaseValidate
 {
     protected $rule = [
-        'products' => 'checkProducts',
+        'orderProducts' => 'checkProducts',
+        'orderExpress' => 'number'
     ];
 
     private $singleRule = [

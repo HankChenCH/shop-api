@@ -34,6 +34,15 @@ class Order extends BaseModel
 		return json_decode($value);
 	}
 
+	public function getSnapExpressAttr($value)
+	{
+		if (empty($value)) {
+			return null;
+		}
+
+		return json_decode($value);
+	}
+
 	public static function getSummaryByUser($uid, $page=1, $size=15)
 	{
 		$paingData = self::where('user_id','=',$uid)
