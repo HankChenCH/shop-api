@@ -45,7 +45,11 @@ class Pay
         //直接使用订单价格
         $order = OrderModel::where('id','=',$this->orderID)->find();
 
-        return $this->makeWxPreOrder(!empty($order['discount_price']) ? $order['discount_price'] : $status['orderPrice']);
+        $orderPrice = !empty($order['discount_price']) ? 
+                    $order['discount_price'] : 
+                    $status['orderPrice'] + $status['expressPrice'];
+
+        return $this->makeWxPreOrder($orderPrice);
     }
 
     private function makeWxPreOrder($totalPrice)

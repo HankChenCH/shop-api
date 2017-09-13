@@ -22,13 +22,16 @@ class Order
 {
 	protected $oProducts;
 
+	protected $oExpress;
+
 	protected $products;
 
 	protected $uid;
 
-	public function place($uid, $oProducts)
+	public function place($uid, $oProducts, $oExpress)
 	{
 		$this->oProducts = $oProducts;
+		$this->oExpress = $oExpress;
 		$this->products = $this->getProductsByOrder();
 		$this->uid = $uid;
 
@@ -38,6 +41,9 @@ class Order
 			$status['order_id'] = -1;
 			return $status;
 		}
+
+		// var_dump($status);
+		// exit();
 
 		//开始创建订单
 		$orderSnap = $this->snapOrder($status);
@@ -50,7 +56,10 @@ class Order
 	public function checkOrderStock($orderID)
     {
         $oProducts = OrderProduct::where('order_id','=',$orderID)->select();
+        $order = OrderModel::where('id','=',$orderID)->find();
         $this->oProducts = $oProducts;
+        $expressInfo = json_decode($order->snap_express,true);
+        $this->oExpress = $expressInfo['express_price'];
         $this->products = $this->getProductsByOrder();
 
         $status = $this->getOrderStatus();
@@ -101,6 +110,7 @@ class Order
 			$order->snap_img = $snap['snapImg'];
 			$order->snap_name = $snap['snapName'];
 			$order->snap_address = $snap['snapAddress'];
+			$order->snap_express = $snap['snapExpress'];
 			$order->snap_items = json_encode($snap['pStatus']);
 
 			$order->save();
@@ -140,15 +150,17 @@ class Order
 			'pStatus' => [],
 			'snapAddress' => null,
 			'snapName' => '',
-			'snapImg' => ''
+			'snapImg' => '',
+			'snapExpress' => '',
 		];
 
-		$snap['orderPrice'] = $status['orderPrice'];
+		$snap['orderPrice'] = $status['orderPrice'] + $this->oExpress;
 		$snap['totalCount'] = $status['totalCount'];
 		$snap['pStatus'] = $status['pStatusArray'];
 		$snap['snapAddress'] = json_encode($this->getUserAddress());
 		$snap['snapName'] = $this->products[0]['name'];
 		$snap['snapImg'] = $this->products[0]['main_img_url'];
+		$snap['snapExpress'] = json_encode(['express_price' => $this->oExpress]);
 
 		if (count($this->products) > 1) {
 			$snap['snapName'] .= '等';
@@ -177,6 +189,7 @@ class Order
 		$status = [
 			'pass' => true,
 			'orderPrice' => 0,
+			'expressPrice' => 0,
 			'totalCount' => 0,
 			'pStatusArray' => []
 		];
@@ -191,6 +204,11 @@ class Order
 			$status['orderPrice'] += $pStatus['totalPrice'];
 			$status['totalCount'] += $pStatus['counts'];
 			array_push($status['pStatusArray'], $pStatus); 
+		}
+
+		if ($this->oExpress) {
+			// $status['orderPrice'] += $this->oExpress;
+			$status['expressPrice'] += $this->oExpress;
 		}
 
 		return $status;

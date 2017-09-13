@@ -53,9 +53,11 @@ class ProductManager
 
 	public static function clearByTheme($themeId)
 	{
-		$product = ThemeProduct::destroy(['theme_id' => $themeId]);
+		// $products = ThemeProduct::get(['theme_id' => $themeId]);
+		// $products->delete(true);
+		$products = ThemeProduct::destroy(['theme_id' => $themeId], true);
 
-		return $product;
+		return $products;
 	}
 
 }

@@ -28,7 +28,7 @@ class Image
 	    return $image;
     }
 
-    public static function uploadToQiNiu($fileName, $uploadType, $validate)
+    public static function uploadToQiNiu($fileName, $uploadType, $validate, $style = "")
     {
 		$info = self::moveFile($fileName, $uploadType, $validate);
 
@@ -55,7 +55,7 @@ class Image
 	    } 
 
 	    // var_dump($ret);
-	    $image = self::saveData(SaveFileFromEnum::QINIU, '/' . $ret['key']);
+	    $image = self::saveData(SaveFileFromEnum::QINIU, '/' . $ret['key'] . $style);
 	    return $image;
     }
 
