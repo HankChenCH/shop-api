@@ -13,14 +13,39 @@ use app\api\service\Image as ImageService;
 
 class Image
 {
+    public function uploadThemeTopicImage()
+    {
+        $image = ImageService::uploadToQiNiu('topicImage', 'theme', ['size'=>156780,'ext'=>'jpg,png']);
+
+        if (!$image){
+            throw new ImageException([
+                'msg' => '保存图片失败'
+            ]);
+        }
+
+        return $image;
+    }
+
+    public function uploadThemeHeadImage()
+    {
+        $image = ImageService::uploadToQiNiu('headImage', 'theme', ['size'=>156780,'ext'=>'jpg,png']);
+
+        if (!$image){
+            throw new ImageException([
+                'msg' => '保存图片失败'
+            ]);
+        }
+
+        return $image;
+    }
+
     public function uploadCategoryTopicImage()
     {
-
         $image = ImageService::uploadToQiNiu('topicImage', 'category', ['size'=>156780,'ext'=>'jpg,png']);
 
         if (!$image){
             throw new ImageException([
-        	'msg' => '保存图片失败'
+        	   'msg' => '保存图片失败'
             ]);
         }
 
@@ -33,7 +58,7 @@ class Image
 
         if (!$image){
             throw new ImageException([
-        	'msg' => '保存图片失败'
+        	   'msg' => '保存图片失败'
             ]);
         }
 
@@ -46,7 +71,7 @@ class Image
 
         if (!$image){
             throw new ImageException([
-            'msg' => '保存图片失败'
+                'msg' => '保存图片失败'
             ]);
         }
 

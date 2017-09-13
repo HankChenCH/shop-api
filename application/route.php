@@ -13,8 +13,17 @@ use think\Route;
 
 Route::get(':version/banner/:id',"api/:version.Banner/getBanner");
 
-Route::get(':version/theme',"api/:version.Theme/getSimpleList");
-Route::get(':version/theme/:id','api/:version.Theme/getComplexOne',[],['id'=>'\d+']);
+Route::group(':version/theme',function(){
+	Route::get('',"api/:version.Theme/getSimpleList");
+	Route::get('/all','api/:version.Theme/getAllThemes');
+	Route::get('/:id','api/:version.Theme/getComplexOne',[],['id'=>'\d+']);
+	Route::get('/:id/product','api/:version.Theme/getAllProduct',[],['id'=>'\d+']);
+	Route::post('','api/:version.Theme/createTheme');
+	Route::put('/:id/product','api/:version.Theme/updateProductList',[],['id'=>'\d+']);
+	Route::put('/:id','api/:version.Theme/updateTheme');
+	Route::delete('/:id','api/:version.Theme/removeTheme',[],['id'=>'\d+']);
+	Route::delete('/batch','api/:version.Theme/batchRemoveTheme');
+});
 
 Route::group(':version/product',function(){
 	Route::get('','api/:version.Product/getAll');
@@ -22,7 +31,7 @@ Route::group(':version/product',function(){
 	Route::get('/recent','api/:version.Product/getRecent');
 	Route::get('/by_category','api/:version.Product/getAllByCategory');
 	Route::get('/search','api/:version.Product/getSearchByKeyWord');
-	Route::get('/in_category/all','api/:version.Product/getAllInCategory');
+	Route::get('/all','api/:version.Product/getAllList');
 	Route::post('','api/:version.Product/createProductBase');
 	Route::put('/:id','api/:version.Product/updateProductBase',[],['id'=>'\d+']);
 	Route::put('/:id/stock_and_price','api/:version.Product/updateProductStockAndPrice');
@@ -70,14 +79,26 @@ Route::post(':version/pay/wxnotify','api/:version.Pay/receiveWxNotify');
 
 Route::get(':version/search/all','api/:version.SearchWord/allSearch');
 
-Route::post(':version/user/wx_info','api/:version.User/updateWxInfo');
+Route::group(':version/user', function (){
+	Route::get('','api/:version.User/getAll');
+	Route::post('/wx_info','api/:version.User/updateWxInfo');
+});
 
 Route::group(':version/admin',function (){
+	Route::get('','api/:version.Admin/getAll');
 	Route::post('','api/:version.Admin/createAdmin');
+	Route::put('/:id','api/:version.Admin/updateAdmin');
+	Route::put('/:id/status','api/:version.Admin/disOrEnable');
+	Route::delete('/:id','api/:version.Admin/removeAdmin');
+	Route::delete('/batch','api/:version.Admin/batchRemoveAdmin');
 });
 
 Route::group(':version/image', function (){
+	Route::post('/theme_topic_img','api/:version.Image/uploadThemeTopicImage');
+	Route::post('/theme_head_img','api/:version.Image/uploadThemeHeadImage');
 	Route::post('/category_topic_img','api/:version.Image/uploadCategoryTopicImage');
 	Route::post('/product_main_img','api/:version.Image/uploadProductMainImage');
 	Route::post('/product_detail_img','api/:version.Image/uploadProductDetailImage');
 });
+
+Route::get(':version/express_setting','api/:version.Express/getSetting');

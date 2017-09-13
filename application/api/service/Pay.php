@@ -44,9 +44,8 @@ class Pay
 
         //直接使用订单价格
         $order = OrderModel::where('id','=',$this->orderID)->find();
-        return $order;
 
-        return $this->makeWxPreOrder($order['total_price']);
+        return $this->makeWxPreOrder(!empty($order['discount_price']) ? $order['discount_price'] : $status['orderPrice']);
     }
 
     private function makeWxPreOrder($totalPrice)
@@ -60,7 +59,7 @@ class Pay
         $wxOrderData->SetOut_trade_no($this->orderNO);
         $wxOrderData->SetTrade_type('JSAPI');
         $wxOrderData->SetTotal_fee($totalPrice * 100);
-        $wxOrderData->SetBody('探小店');
+        $wxOrderData->SetBody(config('wx.shop_name'));
         $wxOrderData->SetOpenid($openid);
         $wxOrderData->SetNotify_url(config('wx.pay_callback'));
 

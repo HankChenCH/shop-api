@@ -12,11 +12,11 @@ namespace app\api\validate;
 class OrderUpdate extends BaseValidate
 {
 	protected $rule = [
-		'total_price' => 'require|number',
+		'discount_price' => 'require|number',
 		'reason' => 'require|isNotEmpty'
 	];
 
 	protected $scene = [
-        'changePrice' => ['total_price','reason'],
+        'changePrice' => ['discount_price','reason'],
 	];
 }
