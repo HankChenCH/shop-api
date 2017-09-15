@@ -93,7 +93,7 @@ class WxNotify extends \WxPayNotify
 	{
 		foreach ($stockStatus['pStatusArray'] as $singlePStatus) {
 			ProductModel::where('id','=',$singlePStatus['id'])
-				->setDec('stock',$singlePStatus['count']);
+				->setDec('stock',$singlePStatus['counts']);
 		}
 	}
 }
