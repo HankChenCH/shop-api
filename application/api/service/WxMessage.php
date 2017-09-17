@@ -7,7 +7,7 @@ use think\Log;
 
 class WxMessage
 {
-	private $sendUrl = "https://api.weixin.qq.com/cgi-bin/wxopen/template/library/list?access_token=%s";
+	private $sendUrl = "https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=%s";
 	private $touser;
 	private $color = '#292929';
 

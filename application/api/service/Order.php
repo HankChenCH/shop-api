@@ -305,7 +305,9 @@ class Order
 			$expressData['express_no'] = $newData['express_no'];
 		}
 
-		$expressData['express_price'] = $oldData->express_price;
+		if (!empty($oldData)) {
+			$expressData['express_price'] = $oldData->express_price;
+		}
 
 		return json_encode($expressData);
 	}

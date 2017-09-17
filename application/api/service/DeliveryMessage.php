@@ -7,7 +7,7 @@ use app\lib\exception\OrderExpcetion;
 
 class DeliveryMessage extends WxMessage
 {
-	const DELIVERY_MSG_ID = 'ZDPKlRa5xM9R06aXCZu_c8VqKIBLSOspTXP';
+	const DELIVERY_MSG_ID = 'ZDPKlRa5xM9R06aXCZu_c8VqKIBLSOspTXPYH_B0xFM';
 
 	public function send($order, $tplJumpPage = '')
 	{
