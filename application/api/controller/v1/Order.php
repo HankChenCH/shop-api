@@ -19,6 +19,7 @@ use app\api\service\Order as OrderService;
 use app\api\service\Token as TokenService;
 use app\api\model\Order as OrderModel;
 use app\lib\exception\OrderException;
+use app\lib\exception\SuccessMessage;
 
 
 class Order extends BaseController
@@ -156,5 +157,22 @@ class Order extends BaseController
 		}
 
 		return $orders;
+	}
+
+	public function delivery($id)
+	{
+		(new IDMustBePostiveInt())->goCheck();
+
+		$validate = new OrderUpdate();
+		$validate->scene('delivery');
+		$validate->goCheck();
+
+		$data = $validate->getDataOnScene(input('put.'));
+
+		$order = new OrderService();
+		$success = $order->delivery($id, $data);
+		if ($success) {
+			return new SuccessMessage();
+		}
 	}
 }

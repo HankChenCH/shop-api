@@ -71,6 +71,7 @@ Route::get(':version/order/by_user','api/:version.Order/getSummaryByUser');
 Route::get(':version/order/by_admin','api/:version.Order/getSummaryByAdmin');
 Route::get(':version/order/:id','api/:version.Order/getDetail',[],['id'=>'\d+']);
 Route::put(':version/order/by_admin/price/:id','api/:version.Order/updatePrice',[],['id'=>'\d+']);
+Route::put(':version/order/by_admin/delivery/:id','api/:version.Order/delivery',[],['id'=>'\d+']);
 Route::delete(':version/order/by_admin/batch','api/:version.Order/batchRemoveOrder');
 Route::delete(':version/order/by_admin/:id','api/:version.Order/removeOrder',[],['id'=>'\d+']);
 
@@ -89,6 +90,7 @@ Route::group(':version/admin',function (){
 	Route::post('','api/:version.Admin/createAdmin');
 	Route::put('/:id','api/:version.Admin/updateAdmin');
 	Route::put('/:id/status','api/:version.Admin/disOrEnable');
+	Route::put('/batch','api/:version.Admin/batchUpdate');
 	Route::delete('/:id','api/:version.Admin/removeAdmin');
 	Route::delete('/batch','api/:version.Admin/batchRemoveAdmin');
 });

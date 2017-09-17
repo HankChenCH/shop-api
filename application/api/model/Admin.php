@@ -14,6 +14,11 @@ class Admin extends BaseModel
 {
     protected $hidden = ['password','update_time','delete_time'];
 
+    public function profile()
+    {
+    	return $this->hasOne('AdminProfile','admin_id');
+    }
+
     public static function login($loginName, $password)
     {
         $admin = self::where('user_name', '=', $loginName)

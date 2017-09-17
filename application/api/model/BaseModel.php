@@ -15,12 +15,13 @@ use traits\model\SoftDelete;
 class BaseModel extends Model
 {
 	use SoftDelete;
-	protected $deleteTime = 'delete_time';
+    protected static $instance;
+    protected $deleteTime = 'delete_time';
 
     public static function getAllBySearch($search)
     {
-        $class = get_called_class();
-        $models = (new $class);
+        self::getInstance();
+        $models = self::$instance;
         foreach ($search as $key => $value) {
 
             if (empty($value)) {
@@ -58,6 +59,18 @@ class BaseModel extends Model
         $models->order('create_time desc');
         return $models;
     }
+
+    public static function batchUpdate($ids, $data)
+    {
+        self::getInstance();
+        $models = self::$instance;
+
+        $models->save($data,function($query) use ($ids){
+            $query->where('id','in',$ids);
+        });
+
+        return $models;
+    }
 	
     protected function imgPrefix($value,$data)
     {
@@ -68,5 +81,13 @@ class BaseModel extends Model
             $finUrl = config('setting.qiniu_prefix') . $value;
         }
         return $finUrl;
+    }
+
+    public static function getInstance()
+    {
+        if (is_null(self::$instance)) {
+            $class = get_called_class();
+            self::$instance = (new $class);
+        }
     }
 }

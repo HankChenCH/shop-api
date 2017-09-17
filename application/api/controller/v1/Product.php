@@ -277,10 +277,10 @@ class Product
 
 		$data = $productValidate->getDataOnScene(input('put.'));
 
-		$products = new ProductModel;
-		$products->save($data,function($query){
-		    $query->where('id','in',input('put.ids'));
-		});
+		$products = ProductModel::batchUpdate(input('put.ids'), $data);
+		// $products->save($data,function($query){
+		//     $query->where('id','in',input('put.ids'));
+		// });
 
 		if (!$products) {
 			throw new ProductException([

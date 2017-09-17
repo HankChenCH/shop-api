@@ -14,6 +14,7 @@ use app\api\model\OrderLog as OrderLogModel;
 use app\api\model\UserAddress;
 use app\api\model\OrderProduct;
 use app\lib\exception\OrderException;
+use app\lib\enum\OrderStatusEnum;
 use app\lib\enum\OrderLogTypeEnum;
 use think\Log;
 use think\Db;
@@ -266,5 +267,46 @@ class Order
 			->toArray();
 
 		return $products;
+	}
+
+	public function delivery($orderID, $orderData, $jumpPage = '')
+	{
+		$order = OrderModel::get($orderID);
+
+		if (!$order) {
+			throw new OrderException();
+		}
+
+		if ($order->status != OrderStatusEnum::PAID) {
+			throw new OrderException([
+				'msg' => '订单状态异常，不能发货',
+				'errorCode' => 80002,
+				'code' => 403	
+			]);
+		}
+
+		$order->status = OrderStatusEnum::DELIVERED;
+		$order->snap_express = $this->makeSnapExpressInfo($orderData,$order->snap_express);
+		$order->save();
+
+		$message = new DeliveryMessage();
+		return $message->send($order, $jumpPage);
+	}
+
+	private function makeSnapExpressInfo($newData, $oldData)
+	{
+		$expressData = array();
+
+		if (array_key_exists('express_name', $newData)) {
+			$expressData['express_name'] = $newData['express_name'];
+		}
+
+		if (array_key_exists('express_no', $newData)) {
+			$expressData['express_no'] = $newData['express_no'];
+		}
+
+		$expressData['express_price'] = $oldData->express_price;
+
+		return json_encode($expressData);
 	}
 }
