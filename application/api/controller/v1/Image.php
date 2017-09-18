@@ -67,7 +67,7 @@ class Image
 
     public function uploadProductDetailImage()
     {
-        $image = ImageService::uploadToQiNiu('detailImage', 'product_detail', ['size'=>156780,'ext'=>'jpg,png'], '?imageMogr2/thumbnail/375x/blur/1x0/quality/75|imageslim');
+        $image = ImageService::uploadToQiNiu('detailImage', 'product_detail', ['size'=>156780,'ext'=>'jpg,png']);
 
         if (!$image){
             throw new ImageException([

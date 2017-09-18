@@ -9,6 +9,7 @@
 namespace app\api\service;
 
 use app\api\model\Product as ProductModel;
+use app\api\model\ProductSales as ProductSalesModel;
 use app\api\model\ProductDetail;
 use app\api\model\ProductProperty;
 
@@ -58,5 +59,30 @@ class Product
 		$product->save($data);
 
 		return $product;
+	}
+
+	public static function countSales($countMonth)
+	{
+		$needCountYear = (int)date('Y');
+		$needCountMonth = (int)date('m');
+		$countMonth -= 1;
+
+		if ($countMonth > $needCountMonth) {
+			$monthNum  = $countMonth % 12;
+			$yearNum = intval($countMonth / 12);
+			$needCountYear -= $yearNum;
+			$needCountMonth = 12 - $monthNum;
+		} else {
+			$needCountMonth = $needCountMonth - $countMonth;
+		}
+
+		$countTime = strtotime($needCountYear . '-' . $needCountMonth . '-01');
+
+		$productSales = ProductSalesModel::where('create_time','EGT',$countTime)
+							->field('SUM(sales) AS month_sales,SUM(counts) AS month_counts,FROM_UNIXTIME(create_time,"%Y%m") AS count_date')
+							->group('count_date')
+							->select();
+
+		return $productSales;
 	}
 }

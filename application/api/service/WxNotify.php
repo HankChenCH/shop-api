@@ -4,6 +4,7 @@ namespace app\api\service;
 
 use app\api\model\Order as OrderModel;
 use app\api\model\Product as ProductModel;
+use app\api\model\ProductSales as ProductSalesModel;
 use app\api\service\Order as OrderService;
 use app\lib\enum\OrderStatusEnum;
 use think\Log;
@@ -92,8 +93,12 @@ class WxNotify extends \WxPayNotify
 	private function reduceStock($stockStatus)
 	{
 		foreach ($stockStatus['pStatusArray'] as $singlePStatus) {
+			//减库存
 			ProductModel::where('id','=',$singlePStatus['id'])
 				->setDec('stock',$singlePStatus['counts']);
+
+			//加销量
+			ProductSalesModel::addSales($singlePStatus);
 		}
 	}
 }

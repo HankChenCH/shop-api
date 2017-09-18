@@ -11,6 +11,7 @@ namespace app\api\controller\v1;
 use app\api\validate\Count;
 use app\api\validate\IDMustBePostiveInt;
 use app\api\validate\IDConllection;
+use app\api\validate\CountMonthInt;
 use app\api\validate\PagingParameterAdmin;
 use app\api\validate\ProductParameter;
 use app\api\validate\Keyword;
@@ -72,6 +73,15 @@ class Product
         $products = ProductModel::getProductsByCategoryID($id);
 
 		return $products;
+	}
+
+	public function getMonthSales($countMonth)
+	{
+		(new CountMonthInt())->goCheck();
+
+		$productCount = ProductService::countSales($countMonth);
+
+		return $productCount;
 	}
 
 	public function getOne($id)
