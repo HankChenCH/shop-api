@@ -77,11 +77,8 @@ class Product
 		}
 
 		$countTime = strtotime($needCountYear . '-' . $needCountMonth . '-01');
-
-		$productSales = ProductSalesModel::where('create_time','EGT',$countTime)
-							->field('SUM(sales) AS month_sales,SUM(counts) AS month_counts,FROM_UNIXTIME(create_time,"%Y%m") AS count_date')
-							->group('count_date')
-							->select();
+		
+		$productSales = ProductSalesModel::countSalesToNow($countTime);
 
 		return $productSales;
 	}

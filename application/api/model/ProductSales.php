@@ -8,9 +8,9 @@ class ProductSales extends BaseModel
 
 	public static function addSales($productStatus)
 	{
-		$nowMonth = date('Ym');
+		$nowMonth = date('Ymd');
 		$product = self::where('product_id',$productStatus['id'])
-						->where('FROM_UNIXTIME(create_time, \'%Y%m\')', $nowMonth)
+						->where('FROM_UNIXTIME(create_time, \'%Y%m%d\')', $nowMonth)
 						->find();
 
 		if (!$product) {
@@ -33,5 +33,16 @@ class ProductSales extends BaseModel
 	{
 		$this->setInc('sales', $productStatus['totalPrice']);
 		$this->setInc('counts', $productStatus['counts']);
+	}
+
+	public static function countSalesToNow($countTime, $productId = 'IS NOT NULL', $countDataFromat = '%Y%m')
+	{
+		$productSales = self::where('create_time','EGT',$countTime)
+			// ->where('product_id',$productId)
+			->field("SUM(sales) AS month_sales,SUM(counts) AS month_counts,FROM_UNIXTIME(create_time,'{$countDataFromat}') AS count_date")
+			->group('count_date')
+			->select();
+
+		return $productSales;
 	}
 }
