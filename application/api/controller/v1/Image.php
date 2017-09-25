@@ -11,8 +11,12 @@ namespace app\api\controller\v1;
 use app\lib\exception\ImageException;
 use app\api\service\Image as ImageService;
 
-class Image
+class Image extends BaseController
 {
+    // protected $beforeActionList = [
+    //     'checkAdminScope' => ['only' => 'uploadThemeTopicImage,uploadThemeHeadImage,uploadCategoryTopicImage,uploadProductMainImage,uploadProductDetailImage'],
+    // ];
+
     public function uploadThemeTopicImage()
     {
         $image = ImageService::uploadToQiNiu('topicImage', 'theme', ['size'=>156780,'ext'=>'jpg,png']);

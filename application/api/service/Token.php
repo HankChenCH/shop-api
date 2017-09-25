@@ -102,6 +102,11 @@ class Token
         return $key;
     }
 
+    public static function needAdminScope()
+    {
+    	return self::checkScope('==',ScopeEnum::Super);
+    }
+
 	public static function needPrimaryScope()
 	{
 		return self::checkScope('>=',ScopeEnum::User);
@@ -112,13 +117,9 @@ class Token
 		return self::checkScope('==',ScopeEnum::User);
 	}
 
-	private static function checkScope($op='==',$scopeType)
+	private static function checkScope($op,$scopeType)
 	{
 		$scope = self::getCurrentTokenVar('scope');
-
-		if (!$scope) {
-			throw new TokenException();
-		}
 
 		switch ($op) {
 			case '==':

@@ -17,8 +17,12 @@ use app\api\service\ProductManager;
 use app\api\model\Category as CategoryModel;
 use app\lib\exception\CategoryException;
 
-class Category
+class Category extends BaseController
 {
+	protected $beforeActionList = [
+		'checkAdminScope' => ['only' => 'addCategory,updateCategory,removeCategory,batchRemoveCategory,updateProductList,removeProductList'],
+	];
+
 	public function getAllCategories()
 	{
 		$categories = CategoryModel::all([],'img');

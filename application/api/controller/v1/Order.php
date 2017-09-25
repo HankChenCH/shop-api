@@ -26,7 +26,8 @@ class Order extends BaseController
 {
 	protected $beforeActionList = [
 		'checkExclusiveScope' => ['only' => 'placeOrder'],
-		'checkPrimaryScope' => ['only' => 'getDetail,getSummaryByUser']
+		'checkPrimaryScope' => ['only' => 'getDetail,getSummaryByUser'],
+		'checkAdminScope' => ['only' => 'getSummaryByAdmin,updatePrice,delivery,removeOrder,batchRemoveOrder']
 	];
 
 	public function placeOrder()

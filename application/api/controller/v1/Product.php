@@ -22,8 +22,12 @@ use app\lib\enum\SaveFileFromEnum;
 use app\lib\exception\ProductException;
 use app\lib\exception\ParameterException;
 
-class Product
+class Product extends BaseController
 {
+	protected $beforeActionList = [
+		'checkAdminScope' => ['only' => 'getAllList,getAll,getMonthSales,createProductBase,updateStockAndPrice,updateProductBase,,updateDetail,removeProduct,batchUpdateProduct,batchRemoveProduct,updateProperties,pullOnOffProduct'],
+	];
+
 	public function getRecent($count=15)
 	{
 		(new Count())->goCheck();

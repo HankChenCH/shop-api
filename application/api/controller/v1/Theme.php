@@ -17,8 +17,12 @@ use app\api\validate\ThemeNew;
 use app\api\validate\ProductIDConllection;
 use app\lib\exception\ThemeException;
 
-class Theme
+class Theme extends BaseController
 {
+    protected $beforeActionList = [
+        'checkAdminScope' => ['only' => 'getAllThemes,createTheme,updateTheme,updateProductList,removeTheme,batchRemoveTheme'],
+    ];
+
     public function getSimpleList($ids='')
     {
         (new IDConllection())->goCheck();

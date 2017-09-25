@@ -23,4 +23,9 @@ class BaseController extends Controller
 	{
 		return TokenService::needExclusiveScope();
 	}
+
+	protected function checkAdminScope()
+	{
+		return TokenService::needAdminScope();
+	}
 }

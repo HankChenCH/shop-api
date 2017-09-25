@@ -9,8 +9,9 @@
 namespace app\api\controller\v1;
 
 
-class Express
+class Express extends BaseController
 {
+	
 	public function getSetting()
 	{
 		return [
