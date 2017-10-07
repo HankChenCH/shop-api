@@ -32,8 +32,11 @@ Route::group(':version/product',function(){
 	Route::get('/by_category','api/:version.Product/getAllByCategory');
 	Route::get('/search','api/:version.Product/getSearchByKeyWord');
 	Route::get('/all','api/:version.Product/getAllList');
-	Route::get('/sales','api/:version.Product/getMonthSales');
+	Route::get('/sales','api/:version.Product/getAllMonthSales');
+	Route::get('/:id/sales','api/:version.Product/getOneMonthSales');
+	Route::get('/:id/buynow', 'api/:version.Product/getAllBuyNow');
 	Route::post('','api/:version.Product/createProductBase');
+	Route::post('/:id/buynow', 'api/:version.Product/createBuyNow');
 	Route::put('/:id','api/:version.Product/updateProductBase',[],['id'=>'\d+']);
 	Route::put('/:id/stock_and_price','api/:version.Product/updateProductStockAndPrice');
 	Route::put('/:id/detail','api/:version.Product/updateDetail');
@@ -42,6 +45,7 @@ Route::group(':version/product',function(){
 	Route::put('/batch','api/:version.Product/batchUpdateProduct');
 	Route::delete('/batch','api/:version.Product/batchRemoveProduct');
 	Route::delete('/:id','api/:version.Product/removeProduct',[],['id'=>'\d+']);
+	Route::delete('/:id/buynow/:bid', 'api/:version.Product/removeBuyNow', [], ['id'=>'\d+', 'bid'=>'\d+']);
 });
 
 Route::group(':version/category',function(){
@@ -67,14 +71,17 @@ Route::group(':version/address',function(){
 	Route::get('','api/:version.Address/getAddress');
 });
 
-Route::post(':version/order','api/:version.Order/placeOrder');
-Route::get(':version/order/by_user','api/:version.Order/getSummaryByUser');
-Route::get(':version/order/by_admin','api/:version.Order/getSummaryByAdmin');
-Route::get(':version/order/:id','api/:version.Order/getDetail',[],['id'=>'\d+']);
-Route::put(':version/order/by_admin/price/:id','api/:version.Order/updatePrice',[],['id'=>'\d+']);
-Route::put(':version/order/by_admin/delivery/:id','api/:version.Order/delivery',[],['id'=>'\d+']);
-Route::delete(':version/order/by_admin/batch','api/:version.Order/batchRemoveOrder');
-Route::delete(':version/order/by_admin/:id','api/:version.Order/removeOrder',[],['id'=>'\d+']);
+Route::group(':version/order', function (){
+	Route::post('','api/:version.Order/placeOrder');
+	Route::get('/by_user','api/:version.Order/getSummaryByUser');
+	Route::get('/by_admin','api/:version.Order/getSummaryByAdmin');
+	Route::get('/:id','api/:version.Order/getDetail',[],['id'=>'\d+']);
+	Route::get('buynow/:bid', 'api/:version.Order/getBuyNowByUser');
+	Route::put('/by_admin/price/:id','api/:version.Order/updatePrice',[],['id'=>'\d+']);
+	Route::put('/by_admin/delivery/:id','api/:version.Order/delivery',[],['id'=>'\d+']);
+	Route::delete('/by_admin/batch','api/:version.Order/batchRemoveOrder');
+	Route::delete('/by_admin/:id','api/:version.Order/removeOrder',[],['id'=>'\d+']);
+});
 
 Route::post(':version/pay/pre_order','api/:version.Pay/getPreOrder');
 Route::post(':version/pay/wxnotify','api/:version.Pay/receiveWxNotify');
@@ -105,3 +112,15 @@ Route::group(':version/image', function (){
 });
 
 Route::get(':version/express_setting','api/:version.Express/getSetting');
+
+Route::group(':version/express', function (){
+	Route::get('/all', 'api/:version.Express/getAll');
+	Route::post('', 'api/:version.Express/addExpress');
+	Route::put('/:id', 'api/:version.Express/updateExpress', [], ['id' => '\d+']);
+	Route::delete('/:id', 'api/:version.Express/removeExpress', [], ['id' => '\d+']);
+	Route::delete('/batch', 'api/:version.Express/batchRemoveExpress');
+});
+
+Route::group(':version/buynow', function (){
+	Route::get('/:id', 'api/:version.Product/getOneBuyNow', [], ['id' => '\d+']);
+});

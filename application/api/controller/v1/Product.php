@@ -15,12 +15,15 @@ use app\api\validate\CountMonthInt;
 use app\api\validate\PagingParameterAdmin;
 use app\api\validate\ProductParameter;
 use app\api\validate\Keyword;
+use app\api\validate\BuyNow;
 use app\api\service\Product as ProductService;
 use app\api\model\Product as ProductModel;
+use app\api\model\ProductBuynow as BuyNowModel;
 use app\api\model\SearchWord as SearchWordModel;
 use app\lib\enum\SaveFileFromEnum;
 use app\lib\exception\ProductException;
 use app\lib\exception\ParameterException;
+use app\lib\exception\BuyNowException;
 
 class Product extends BaseController
 {
@@ -45,8 +48,7 @@ class Product extends BaseController
 
 	public function getAllList()
 	{
-		$products = ProductModel::where('is_on','=','1')
-						->order('create_time desc')
+		$products = (new ProductModel)->order('create_time desc')
 						->select();
 
 		if ($products->isEmpty()) {
@@ -79,11 +81,21 @@ class Product extends BaseController
 		return $products;
 	}
 
-	public function getMonthSales($countMonth)
+	public function getAllMonthSales($countMonth)
 	{
 		(new CountMonthInt())->goCheck();
 
 		$productCount = ProductService::countSales($countMonth);
+
+		return $productCount;
+	}
+
+	public function getOneMonthSales($id, $countMonth)
+	{
+		(new IDMustBePostiveInt())->goCheck();
+		(new CountMonthInt())->goCheck();
+
+		$productCount = ProductService::countSales($countMonth, $id);
 
 		return $productCount;
 	}
@@ -99,6 +111,38 @@ class Product extends BaseController
         }
 
         return $product;
+	}
+
+	public function getAllBuyNow($id)
+	{
+		(new IDMustBePostiveInt)->goCheck();
+
+		$buyNows = BuyNowModel::where('product_id', $id)
+						->select();
+
+		if ($buyNows->isEmpty()) {
+			throw new BuyNowException([
+				'msg' => '秒杀不存在'
+			]);
+		}
+
+		return $buyNows;
+	}
+
+	public function getOneBuyNow($id)
+	{
+		(new IDMustBePostiveInt)->goCheck();
+
+		$buyNow = BuyNowModel::where('id', $id)
+						->find();
+
+		if (!$buyNow) {
+			throw new BuyNowException([
+				'msg' => '秒杀不存在'
+			]);
+		}
+
+		return array_merge($buyNow->toArray(), ['serverNow' => time()]);
 	}
 
 	public function getSearchByKeyWord($keyword, $page, $size)
@@ -151,6 +195,27 @@ class Product extends BaseController
 		}
 
 		return $product;
+	}
+
+	public function createBuyNow($id)
+	{
+		(new IDMustBePostiveInt)->goCheck();
+
+		$validate = new BuyNow();
+		$validate->scene('create');
+		$validate->goCheck();
+
+		$data = $validate->getDataOnScene(input('post.'));
+
+		$buyNow = BuyNowModel::createOne($id, $data);
+
+		if (!$buyNow) {
+			throw new BuyNowException([
+				'msg' => '开启秒杀失败'
+			]);
+		}
+
+		return $buyNow;
 	}
 
 	public function updateProductBase($id)
@@ -279,6 +344,21 @@ class Product extends BaseController
 		}
 
 		return $product;
+	}
+
+	public function removeBuyNow($id, $bid)
+	{
+		(new IDMustBePostiveInt)->goCheck();
+
+		$buyNow = BuyNowModel::destroy($bid);
+
+		if (!$buyNow) {
+			throw new BuyNowException([
+				'msg' => '删除秒杀失败'
+			]);
+		}
+
+		return $buyNow;
 	}
 
 	public function batchUpdateProduct()

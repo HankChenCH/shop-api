@@ -18,6 +18,7 @@ use app\api\validate\PagingParameter;
 use app\api\service\Order as OrderService;
 use app\api\service\Token as TokenService;
 use app\api\model\Order as OrderModel;
+use app\api\model\OrderProduct as OrderProductModel;
 use app\lib\exception\OrderException;
 use app\lib\exception\SuccessMessage;
 
@@ -46,7 +47,7 @@ class Order extends BaseController
 		(new OrderPlace())->goCheck();
 
 		$products = input('post.orderProducts/a');
-		$express = input('post.orderExpress');
+		$express = !empty(input('post.orderExpress')) ? input('post.orderExpress') : 0 ;
 		$uid = TokenService::getCurrentUid();
 
 		$order = new OrderService();
@@ -106,6 +107,23 @@ class Order extends BaseController
 		}
 
 		return $orderDetail->hidden(['prepay_id']);
+	}
+
+	public function getBuyNowByUser($bid)
+	{
+		$uid = TokenService::getCurrentUid();
+
+		$buyNowOrders = OrderProductModel::where('batch_id', $bid)
+							->with(['order' => function ($query) use ($uid) {
+								$query->where('user_id', $uid);
+							}])
+							->select();
+
+		if ($buyNowOrders->isEmpty()) {
+			return null;
+		}
+
+		return $buyNowOrders;
 	}
 
 	public function updatePrice($id)

@@ -61,7 +61,7 @@ class Product
 		return $product;
 	}
 
-	public static function countSales($countMonth)
+	public static function countSales($countMonth, $productID = NULL)
 	{
 		$needCountYear = (int)date('Y');
 		$needCountMonth = (int)date('m');
@@ -78,7 +78,7 @@ class Product
 
 		$countTime = strtotime($needCountYear . '-' . $needCountMonth . '-01');
 		
-		$productSales = ProductSalesModel::countSalesToNow($countTime);
+		$productSales = ProductSalesModel::countSalesToNow($countTime, $productID);
 
 		return $productSales;
 	}

@@ -33,9 +33,15 @@ class Product extends BaseModel
 		return $this->hasOne('ProductDetail');
 	}
 
+	public function buyNow()
+	{
+		return $this->hasMany('ProductBuynow', 'product_id', 'id');
+	}
+
 	public static function getMostRecent($count)
 	{
-		$products = self::where('is_on', '=', '1')
+		$products = self::where('is_on', '1')
+			->where('type','1')
 			->limit($count)
 		    ->order('create_time desc')
 		    ->select();
@@ -53,13 +59,13 @@ class Product extends BaseModel
 
 	public static function getProductDetail($id)
 	{
-        $product = self::with([
-                'imgs' => function($query){
-                    $query->with(['imgUrl'])
-                        ->order('order','ASC');
-                }
-        	])
-        	->with(['properties'])
+        // $product = self::with([
+        //         'imgs' => function($query){
+        //             $query->with(['imgUrl'])
+        //                 ->order('order','ASC');
+        //         }
+        // 	])
+        $product = self::with(['properties'])
         	->with(['details'])
         	->find($id);
 

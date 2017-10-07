@@ -19,12 +19,13 @@ class ProductParameter extends BaseValidate
 		'main_img_url' => 'require|isNotEmpty',
 		'price' => 'require|number',
 		'stock' => 'require|isPostiveInteger',
+		'type' => 'require|isNotEmpty',
 		'is_on' => 'require',
 	];
 
 	protected $scene = [
-		'baseCreate' => ['name','summary','from','price','stock','main_img_url','img_id','is_on'],
-		'baseUpdate' => ['name','summary','price','stock'],
+		'baseCreate' => ['name','summary','from','price','stock','main_img_url','img_id','is_on','type'],
+		'baseUpdate' => ['name','summary','from','price','stock','main_img_url','img_id','is_on'],
         'updateStockAndPrice' => ['price','stock'],
         'pullOnOff' => ['is_on'],
 	];

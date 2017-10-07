@@ -13,8 +13,10 @@ use app\api\model\Order as OrderModel;
 use app\api\model\OrderLog as OrderLogModel;
 use app\api\model\UserAddress;
 use app\api\model\OrderProduct;
+use app\api\model\ProductBuyNow;
 use app\lib\exception\OrderException;
 use app\lib\enum\OrderStatusEnum;
+use app\lib\enum\OrderTypeEnum;
 use app\lib\enum\OrderLogTypeEnum;
 use think\Log;
 use think\Db;
@@ -29,7 +31,7 @@ class Order
 
 	protected $uid;
 
-	public function place($uid, $oProducts, $oExpress)
+	public function place($uid, $oProducts, $oExpress = 0)
 	{
 		$this->oProducts = $oProducts;
 		$this->oExpress = $oExpress;
@@ -42,9 +44,6 @@ class Order
 			$status['order_id'] = -1;
 			return $status;
 		}
-
-		// var_dump($status);
-		// exit();
 
 		//开始创建订单
 		$orderSnap = $this->snapOrder($status);
@@ -112,6 +111,7 @@ class Order
 			$order->snap_address = $snap['snapAddress'];
 			$order->snap_express = $snap['snapExpress'];
 			$order->snap_items = json_encode($snap['pStatus']);
+			$order->type = $snap['type'];
 
 			$order->save();
 
@@ -152,6 +152,7 @@ class Order
 			'snapName' => '',
 			'snapImg' => '',
 			'snapExpress' => '',
+			'type' => OrderTypeEnum::NORMAL,
 		];
 
 		$snap['orderPrice'] = $status['orderPrice'] + $this->oExpress;
@@ -161,6 +162,7 @@ class Order
 		$snap['snapName'] = $this->products[0]['name'];
 		$snap['snapImg'] = $this->products[0]['main_img_url'];
 		$snap['snapExpress'] = json_encode(['express_price' => $this->oExpress]);
+		$snap['type'] = $status['type'];
 
 		if (count($this->products) > 1) {
 			$snap['snapName'] .= '等';
@@ -188,6 +190,7 @@ class Order
 	{
 		$status = [
 			'pass' => true,
+			'type' => OrderTypeEnum::NORMAL,
 			'orderPrice' => 0,
 			'expressPrice' => 0,
 			'totalCount' => 0,
@@ -195,10 +198,14 @@ class Order
 		];
 
 		foreach ($this->oProducts as $oProduct) {
-			$pStatus = $this->getProductStatus($oProduct['product_id'],$oProduct['count'],$this->products);
+			$pStatus = $this->getProductStatus($oProduct,$this->products);
 
 			if (!$pStatus['haveStock']) {
 				$status['pass'] = false;
+			}
+
+			if (!empty($oProduct['batch_id'])) {
+				$status['type'] = OrderTypeEnum::BUY_NOW;
 			}
 
 			$status['orderPrice'] += $pStatus['totalPrice'];
@@ -207,26 +214,31 @@ class Order
 		}
 
 		if ($this->oExpress) {
-			// $status['orderPrice'] += $this->oExpress;
 			$status['expressPrice'] += $this->oExpress;
 		}
 
 		return $status;
 	}
 
-	private function getProductStatus($oPID,$oCount,$products)
+	private function getProductStatus($oProduct,$products)
 	{
 		$pIndex = -1;
+		$oPID = $oProduct['product_id'];
+		$oCount = $oProduct['count'];
+		$oBatchID = $oProduct['batch_id'];
 
 		$pStatus = [
 			'id' => null,
 			'haveStock' => false,
 			'counts' => 0,
+			'type' => 1,
 			'price' => null,
 			'main_img_url' => null,
 			'name' => '',
-			'totalPrice' => 0
+			'totalPrice' => 0,
+			'batch_no' => null,
 		];
+
 
 		for ($i=0; $i < count($products); $i++) { 
 			if ($oPID === $products[$i]['id']) {
@@ -239,17 +251,30 @@ class Order
 				'msg' => 'id为'.$oPID.'商品不存在，订单创建失败'
 			]);
 		}else{
+
 			$product = $products[$pIndex];
 			$pStatus['id'] = $product['id'];
 			$pStatus['name'] = $product['name'];
 			$pStatus['counts'] = $oCount;
 			$pStatus['price'] = $product['price'];
 			$pStatus['main_img_url'] = $product['main_img_url'];
-			$pStatus['totalPrice'] = $product['price'] * $oCount;
+			$pStatus['type'] = $product['type'];
+			$pStatus['totalPrice'] = $pStatus['price'] * $oCount;
 
-			if ($product['stock'] - $oCount >= 0) {
-				$pStatus['haveStock'] = true;
+			if (isset($product['buy_now'])) {
+				if ($product['buy_now'][0]['stock'] - $oCount >= 0) {
+					$pStatus['haveStock'] = true;
+				}
+				$pStatus['price'] = $product['buy_now'][0]['price'];
+				$pStatus['totalPrice'] = $pStatus['price'] * $oCount;
+				$pStatus['batch_no'] = $product['buy_now'][0]['batch_no'];
+				$pStatus['batch_id'] = $product['buy_now'][0]['id'];
+			} else {
+				if ($product['stock'] - $oCount >= 0) {
+					$pStatus['haveStock'] = true;
+				}
 			}
+
 		}
 
 		return $pStatus;
@@ -258,13 +283,27 @@ class Order
 	private function getProductsByOrder()
 	{
 		$oPids = [];
+		$oBatchID = [];
 		foreach ($this->oProducts as $oProduct) {
 			array_push($oPids, $oProduct['product_id']);
+
+			if (isset($oProduct['batch_id']) && !empty($oProduct['batch_id'])) {
+				array_push($oBatchID, $oProduct['batch_id']);
+			}
 		}
 
-		$products = Product::all($oPids)
-			->visible(['id','name','price','stock','main_img_url'])
-			->toArray();
+		if (count($oBatchID) > 0) {
+			$products = Product::with(['buyNow' => function ($query) use ($oBatchID){
+								$query->where('id', 'in', $oBatchID);
+							}])
+							->select($oPids)
+							->visible(['id','name','price','stock','main_img_url','type', 'buy_now'])
+							->toArray();
+		} else {
+			$products = Product::all($oPids)
+				->visible(['id','name','price','stock','main_img_url','type'])
+				->toArray();
+		}
 
 		return $products;
 	}

@@ -5,8 +5,10 @@ namespace app\api\service;
 use app\api\model\Order as OrderModel;
 use app\api\model\Product as ProductModel;
 use app\api\model\ProductSales as ProductSalesModel;
+use app\api\model\ProductBuynow as ProductBuynowModel;
 use app\api\service\Order as OrderService;
 use app\lib\enum\OrderStatusEnum;
+use app\lib\enum\OrderTypeEnum;
 use think\Log;
 use think\Db;
 use think\Loader;
@@ -83,7 +85,7 @@ class WxNotify extends \WxPayNotify
 		}
 	}
 
-	private function updateOrderStatus($orderID,$success)
+	private function updateOrderStatus($orderID, $success)
 	{
 		$status = $success ? OrderStatusEnum::PAID : OrderStatusEnum::PAID_BUT_OUT_OF;
 
@@ -96,6 +98,11 @@ class WxNotify extends \WxPayNotify
 			//减库存
 			ProductModel::where('id','=',$singlePStatus['id'])
 				->setDec('stock',$singlePStatus['counts']);
+
+			if ($stockStatus['type'] === OrderTypeEnum::BUY_NOW) {
+				ProductBuynowModel::where('id', '=', $singlePStatus['batch_id'])
+					->setDec('stock', $singlePStatus['counts']);
+			}
 
 			//加销量
 			ProductSalesModel::addSales($singlePStatus);

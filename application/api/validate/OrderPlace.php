@@ -13,7 +13,8 @@ class OrderPlace extends BaseValidate
 
     private $singleRule = [
     	'product_id' => 'require|isPostiveInteger',
-    	'count' => 'require|isPostiveInteger'
+    	'count' => 'require|isPostiveInteger',
+        'batch_id' => 'isPostiveInteger'
     ];
 
     protected function checkProducts($values)

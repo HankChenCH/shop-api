@@ -11,4 +11,10 @@ namespace app\api\model;
 
 class OrderProduct extends BaseModel
 {
+	protected $hidden = ['delete_time', 'update_time'];
+
+	public function order()
+	{
+		return $this->belongsTo('Order', 'order_id', 'id');
+	}
 }

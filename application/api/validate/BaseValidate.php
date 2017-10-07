@@ -32,6 +32,25 @@ class BaseValidate extends Validate
         }
     }
 
+    public function getDataOnScene($arrays)
+    {
+        $scene = $this->currentScene;
+        $paramKeys = $this->scene[$scene];
+        $paramArray = [];
+
+        foreach ($paramKeys as $k => $v) {
+            if (array_key_exists($v, $arrays)) {
+                $paramArray[$v] = $arrays[$v];
+            }
+
+            if (array_key_exists($k, $arrays)) {
+                $paramArray[$k] = $arrays[$k];
+            }            
+        }
+
+        return $paramArray;
+    }
+
     protected function isPostiveInteger($value, $rule='', $data='', $field='')
     {
         if (is_numeric($value) && is_int($value + 0) && ($value + 0) > 0){
@@ -40,6 +59,18 @@ class BaseValidate extends Validate
         else{
             return false;
 //            return $field . '必须为整数';
+        }
+    }
+
+    protected function endTimeMustLagerStartTime($value, $rule='', $data, $field='')
+    {
+        $endTime = $this->toTimeStamp($data['end_time']);
+        $startTime = $this->toTimeStamp($data['start_time']);
+
+        if ($end_time - $start_time > 0) {
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -65,23 +96,13 @@ class BaseValidate extends Validate
         return true;
     }
 
-    public function getDataOnScene($arrays)
+    protected function isPhone($value)
     {
-        $scene = $this->currentScene;
-        $paramKeys = $this->scene[$scene];
-        $paramArray = [];
-
-        foreach ($paramKeys as $k => $v) {
-            if (array_key_exists($v, $arrays)) {
-                $paramArray[$v] = $arrays[$v];
-            }
-
-            if (array_key_exists($k, $arrays)) {
-                $paramArray[$k] = $arrays[$k];
-            }            
+        if (!is_numeric($value)) {
+            return false;
         }
 
-        return $paramArray;
+        return true;
     }
 
     protected function checkIDs($value)
@@ -96,5 +117,14 @@ class BaseValidate extends Validate
             }
         }
         return true;
+    }
+
+    protected function toTimeStamp($value) 
+    {
+        if (!is_numeric($value)) {
+            return strtotime($value);
+        }
+
+        return $value;
     }
 }

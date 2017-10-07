@@ -83,11 +83,21 @@ class BaseModel extends Model
         return $finUrl;
     }
 
+    protected function timeFormat($value, $data, $format="Y-m-d H:i:s")
+    {
+        return date($format, $value);
+    }
+
     public static function getInstance()
     {
         if (is_null(self::$instance)) {
             $class = get_called_class();
             self::$instance = (new $class);
         }
+    }
+
+    protected static function mergeIdAndData($idName, $id, $data)
+    {
+        return array_merge([$idName => $id], $data);
     }
 }

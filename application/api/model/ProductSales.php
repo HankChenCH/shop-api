@@ -35,14 +35,21 @@ class ProductSales extends BaseModel
 		$this->setInc('counts', $productStatus['counts']);
 	}
 
-	public static function countSalesToNow($countTime, $productId = 'IS NOT NULL', $countDataFromat = '%Y%m')
+	public static function countSalesToNow($countTime, $productId, $countDataFromat = '%Y%m')
 	{
-		$productSales = self::where('create_time','EGT',$countTime)
-			// ->where('product_id',$productId)
-			->field("SUM(sales) AS month_sales,SUM(counts) AS month_counts,FROM_UNIXTIME(create_time,'{$countDataFromat}') AS count_date")
-			->group('count_date')
-			->select();
+		$productSales = new self;
 
-		return $productSales;
+		if (!is_null($productId)) {
+			$productSales->where('product_id', $productId);
+		}
+
+		return $productSales->where('create_time','EGT',$countTime)
+						->field("SUM(sales) AS month_sales,SUM(counts) AS month_counts,FROM_UNIXTIME(create_time,'{$countDataFromat}') AS count_date")
+						->group('count_date')
+						->select();
+
+		// echo $productSales::getLastSql();
+
+		// return $productSales;
 	}
 }
