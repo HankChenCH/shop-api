@@ -48,7 +48,7 @@ class Order extends BaseController
 		(new OrderPlace())->goCheck();
 
 		$products = input('post.orderProducts/a');
-		$express = !empty(input('post.orderExpress')) ? input('post.orderExpress') : 0 ;
+		$express = !empty(input('post.orderExpress/a')) ? input('post.orderExpress/a') : 0 ;
 		$uid = TokenService::getCurrentUid();
 
 		$order = new OrderService();

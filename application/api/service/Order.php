@@ -59,7 +59,7 @@ class Order
         $oProducts = OrderProduct::where('order_id','=',$orderID)->select();
         $order = OrderModel::where('id','=',$orderID)->find();
         $this->oProducts = $oProducts;
-        $this->oExpress = $order->snap_express->express_price;
+        $this->oExpress = $this->toArray($order->snap_express);
         $this->products = $this->getProductsByOrder();
 
         $status = $this->getOrderStatus();
@@ -156,13 +156,13 @@ class Order
 			'type' => OrderTypeEnum::NORMAL,
 		];
 
-		$snap['orderPrice'] = $status['orderPrice'] + $this->oExpress;
+		$snap['orderPrice'] = $status['orderPrice'] + $this->oExpress['express_price'];
 		$snap['totalCount'] = $status['totalCount'];
 		$snap['pStatus'] = $status['pStatusArray'];
 		$snap['snapAddress'] = json_encode($this->getUserAddress());
 		$snap['snapName'] = $this->products[0]['name'];
 		$snap['snapImg'] = $this->products[0]['main_img_url'];
-		$snap['snapExpress'] = json_encode(['express_price' => $this->oExpress]);
+		$snap['snapExpress'] = json_encode($this->oExpress);
 		$snap['type'] = $status['type'];
 
 		if (count($this->products) > 1) {
@@ -215,7 +215,7 @@ class Order
 		}
 
 		if ($this->oExpress) {
-			$status['expressPrice'] += $this->oExpress;
+			$status['expressPrice'] += $this->oExpress['express_price'];
 		}
 
 		return $status;
@@ -387,5 +387,16 @@ class Order
 		}
 
 		return json_encode($oldData);
+	}
+
+	private function toArray($obj)
+	{
+		if (is_array($obj)) {
+			return $obj;
+		}
+
+		$objStr = json_encode($obj);
+
+		return json_decode($objStr, true);
 	}
 }

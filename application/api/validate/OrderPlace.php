@@ -3,12 +3,13 @@
 namespace app\api\validate;
 
 use app\lib\exception\ProductException;
+use app\lib\exception\ExpressException;
 
 class OrderPlace extends BaseValidate
 {
     protected $rule = [
         'orderProducts' => 'checkProducts',
-        'orderExpress' => 'number'
+        'orderExpress' => 'checkExpress',
     ];
 
     private $singleRule = [
@@ -47,5 +48,22 @@ class OrderPlace extends BaseValidate
                 'msg' => '商品参数不能为空'
             ]);
         }
+    }
+
+    protected function checkExpress($values)
+    {
+        if (!is_array($values)) {
+            throw new ExpressException([
+                'msg' => '快递参数错误'
+            ]);
+        }
+
+        if (!array_key_exists('express_name', $values) || !array_key_exists('express_price', $values)) {
+            throw new ExpressException([
+                'msg' => '快递参数错误'
+            ]);
+        }
+
+        return true;
     }
 }
