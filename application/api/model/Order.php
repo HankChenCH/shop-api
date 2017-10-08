@@ -8,6 +8,8 @@
 
 namespace app\api\model;
 
+use app\lib\enum\OrderStatusEnum;
+
 
 class Order extends BaseModel
 {
@@ -51,4 +53,11 @@ class Order extends BaseModel
 
 		return $paingData;
 	} 
+
+	public static function closeOrders($ids = [])
+	{
+		return self::where('id', 'in', $ids)
+				->where('status', 'EQ', OrderStatusEnum::UNPAY)
+				->update(['status' => OrderStatusEnum::CLOSED]);
+	}
 }

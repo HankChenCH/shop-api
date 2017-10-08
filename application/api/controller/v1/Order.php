@@ -13,6 +13,7 @@ use app\api\validate\IDConllection;
 use app\api\validate\OrderPlace;
 use app\api\validate\OrderStatus;
 use app\api\validate\OrderUpdate;
+use app\api\validate\OrderIssue;
 use app\api\validate\PagingParameterAdmin;
 use app\api\validate\PagingParameter;
 use app\api\service\Order as OrderService;
@@ -147,6 +148,23 @@ class Order extends BaseController
 		return $order;
 	}
 
+	public function closeOrders($ids)
+	{
+		(new IDConllection)->goCheck();
+
+		$ids = explode(',',$ids);
+
+		$orders = OrderModel::closeOrders($ids);
+
+		if (!$orders) {
+			throw new OrderException([
+				'msg' => '关闭订单失败',
+			]);
+		}
+
+		return $orders;
+	}
+
 	public function removeOrder($id)
 	{
 		(new IDMustBePostiveInt())->goCheck();
@@ -193,5 +211,24 @@ class Order extends BaseController
 		if ($success) {
 			return new SuccessMessage();
 		}
+	}
+
+	public function issue($id)
+	{
+		(new IDMustBePostiveInt)->goCheck();
+
+		$validate = new OrderIssue();
+		$validate->scene('issue');
+		$validate->goCheck();
+
+		$data = $validate->getDataOnScene(input('put.'));
+
+		$order = new OrderService();
+		$success = $order->issue($id, $data);
+		if ($success) {
+			return new SuccessMessage();
+		}
+
+		return $data;
 	}
 }

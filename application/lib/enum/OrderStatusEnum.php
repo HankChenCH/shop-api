@@ -10,6 +10,7 @@ namespace app\lib\enum;
 
 class OrderStatusEnum
 {
+	const CLOSED = -1;
 	const UNPAID = 1;
 	const PAID = 2;
 	const DELIVERED = 3;

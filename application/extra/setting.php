@@ -12,4 +12,5 @@ return [
     'token_expire_in' => 7200,
     'express_price' => 0,
     'express_limit' => 0,
+    'order_close_time' => 10,
 ];

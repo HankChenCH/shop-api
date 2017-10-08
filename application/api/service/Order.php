@@ -15,6 +15,7 @@ use app\api\model\UserAddress;
 use app\api\model\OrderProduct;
 use app\api\model\ProductBuyNow;
 use app\lib\exception\OrderException;
+use app\lib\enum\TypeEnum;
 use app\lib\enum\OrderStatusEnum;
 use app\lib\enum\OrderTypeEnum;
 use app\lib\enum\OrderLogTypeEnum;
@@ -190,7 +191,7 @@ class Order
 	{
 		$status = [
 			'pass' => true,
-			'type' => OrderTypeEnum::NORMAL,
+			'type' => TypeEnum::ENTITY,
 			'orderPrice' => 0,
 			'expressPrice' => 0,
 			'totalCount' => 0,
@@ -204,8 +205,8 @@ class Order
 				$status['pass'] = false;
 			}
 
-			if (!empty($oProduct['batch_id'])) {
-				$status['type'] = OrderTypeEnum::BUY_NOW;
+			if ($pStatus['type'] == TypeEnum::COUPON) {
+				$status['type'] = TypeEnum::COUPON;
 			}
 
 			$status['orderPrice'] += $pStatus['totalPrice'];
@@ -225,13 +226,12 @@ class Order
 		$pIndex = -1;
 		$oPID = $oProduct['product_id'];
 		$oCount = $oProduct['count'];
-		$oBatchID = $oProduct['batch_id'];
 
 		$pStatus = [
 			'id' => null,
 			'haveStock' => false,
 			'counts' => 0,
-			'type' => 1,
+			'type' => TypeEnum::ENTITY,
 			'price' => null,
 			'main_img_url' => null,
 			'name' => '',
@@ -326,6 +326,8 @@ class Order
 
 		$order->status = OrderStatusEnum::DELIVERED;
 		$order->snap_express = $this->makeSnapExpressInfo($orderData,$order->snap_express);
+		$order->delivery_time = time();
+		
 		$order->save();
 
 		$message = new DeliveryMessage();
@@ -349,5 +351,41 @@ class Order
 		}
 
 		return json_encode($expressData);
+	}
+
+	public function issue($orderID, $orderItemData, $jumpPage = '')
+	{
+		$order = OrderModel::get($orderID);
+
+		if (!$order) {
+			throw new OrderException();
+		}
+
+		if ($order->status != OrderStatusEnum::PAID) {
+			throw new OrderException([
+				'msg' => '订单状态异常，不能出票',
+				'errorCode' => 80005,
+				'code' => 403	
+			]);
+		}
+
+		$order->status = OrderStatusEnum::DELIVERED;
+		$order->snap_items = $this->issueTicketToItem($orderItemData,$order->snap_items);
+		$order->delivery_time = time();
+
+		$order->save();
+
+		$message = new IssueMessage();
+		return $message->send($order, $jumpPage);
+	}
+
+	public function issueTicketToItem($orderItemData, $oldData)
+	{
+
+		foreach ($oldData as $key => &$value) {
+			$value->ticket = $orderItemData['tickets'][$value->id]['ticket'];
+		}
+
+		return json_encode($oldData);
 	}
 }

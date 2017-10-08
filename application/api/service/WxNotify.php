@@ -89,7 +89,7 @@ class WxNotify extends \WxPayNotify
 	{
 		$status = $success ? OrderStatusEnum::PAID : OrderStatusEnum::PAID_BUT_OUT_OF;
 
-		OrderModel::where('id','=',$orderID)->update(['status'=>$status]);
+		OrderModel::where('id','=',$orderID)->update(['status'=>$status, 'pay_time' => time()]);
 	}
 
 	private function reduceStock($stockStatus)

@@ -77,8 +77,10 @@ Route::group(':version/order', function (){
 	Route::get('/by_admin','api/:version.Order/getSummaryByAdmin');
 	Route::get('/:id','api/:version.Order/getDetail',[],['id'=>'\d+']);
 	Route::get('buynow/:bid', 'api/:version.Order/getBuyNowByUser');
+	Route::put('/by_admin/closed', 'api/:version.Order/closeOrders');
 	Route::put('/by_admin/price/:id','api/:version.Order/updatePrice',[],['id'=>'\d+']);
 	Route::put('/by_admin/delivery/:id','api/:version.Order/delivery',[],['id'=>'\d+']);
+	Route::put('/by_admin/issue/:id','api/:version.Order/issue',[],['id'=>'\d+']);
 	Route::delete('/by_admin/batch','api/:version.Order/batchRemoveOrder');
 	Route::delete('/by_admin/:id','api/:version.Order/removeOrder',[],['id'=>'\d+']);
 });

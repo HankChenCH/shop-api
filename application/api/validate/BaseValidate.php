@@ -86,6 +86,19 @@ class BaseValidate extends Validate
         }
     }
 
+    protected function isNotArrayEmpty($value, $rule='', $data='', $field='')
+    {
+        if (!is_array($value)) {
+            return false;
+        }
+
+        if (count($value) > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     protected function isMobile($value)
     {
         $pattern = '/^1(3|5|8)\d{9}$/';
