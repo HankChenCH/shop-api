@@ -11,9 +11,10 @@
 
 use think\Route;
 
-Route::get(':version/banner/:id',"api/:version.Banner/getBanner");
+Route::group('api', function(){
+Route::get('/:version/banner/:id',"api/:version.Banner/getBanner");
 
-Route::group(':version/theme',function(){
+Route::group('/:version/theme',function(){
 	Route::get('',"api/:version.Theme/getSimpleList");
 	Route::get('/all','api/:version.Theme/getAllThemes');
 	Route::get('/:id','api/:version.Theme/getComplexOne',[],['id'=>'\d+']);
@@ -25,7 +26,7 @@ Route::group(':version/theme',function(){
 	Route::delete('/batch','api/:version.Theme/batchRemoveTheme');
 });
 
-Route::group(':version/product',function(){
+Route::group('/:version/product',function(){
 	Route::get('','api/:version.Product/getAll');
 	Route::get('/:id','api/:version.Product/getOne',[],['id'=>'\d+']);
 	Route::get('/recent','api/:version.Product/getRecent');
@@ -48,7 +49,7 @@ Route::group(':version/product',function(){
 	Route::delete('/:id/buynow/:bid', 'api/:version.Product/removeBuyNow', [], ['id'=>'\d+', 'bid'=>'\d+']);
 });
 
-Route::group(':version/category',function(){
+Route::group('/:version/category',function(){
 	Route::delete('/batch','api/:version.Category/batchRemoveCategory');
 	Route::get('/all','api/:version.Category/getAllCategories');
 	Route::put('/:id/product','api/:version.Category/updateProductList');
@@ -58,7 +59,7 @@ Route::group(':version/category',function(){
 	Route::post('','api/:version.Category/addCategory');
 });
 
-Route::group(':version/token',function (){
+Route::group('/:version/token',function (){
 	Route::post('/user','api/:version.Token/getToken');
 	Route::post('/verify','api/:version.Token/validateToken');
 	Route::post('/admin/relogin','api/:version.Token/reAdminToken');
@@ -66,12 +67,12 @@ Route::group(':version/token',function (){
 	Route::delete('/admin','api/:version.Token/logOnAdminToken');
 });
 
-Route::group(':version/address',function(){
+Route::group('/:version/address',function(){
 	Route::post('','api/:version.Address/createOrUpdateAddress');
 	Route::get('','api/:version.Address/getAddress');
 });
 
-Route::group(':version/order', function (){
+Route::group('/:version/order', function (){
 	Route::post('','api/:version.Order/placeOrder');
 	Route::get('/by_user','api/:version.Order/getSummaryByUser');
 	Route::get('/by_admin','api/:version.Order/getSummaryByAdmin');
@@ -85,17 +86,17 @@ Route::group(':version/order', function (){
 	Route::delete('/by_admin/:id','api/:version.Order/removeOrder',[],['id'=>'\d+']);
 });
 
-Route::post(':version/pay/pre_order','api/:version.Pay/getPreOrder');
-Route::post(':version/pay/wxnotify','api/:version.Pay/receiveWxNotify');
+Route::post('/:version/pay/pre_order','api/:version.Pay/getPreOrder');
+Route::post('/:version/pay/wxnotify','api/:version.Pay/receiveWxNotify');
 
-Route::get(':version/search/all','api/:version.SearchWord/allSearch');
+Route::get('/:version/search/all','api/:version.SearchWord/allSearch');
 
-Route::group(':version/user', function (){
+Route::group('/:version/user', function (){
 	Route::get('','api/:version.User/getAll');
 	Route::post('/wx_info','api/:version.User/updateWxInfo');
 });
 
-Route::group(':version/admin',function (){
+Route::group('/:version/admin',function (){
 	Route::get('','api/:version.Admin/getAll');
 	Route::post('','api/:version.Admin/createAdmin');
 	Route::put('/:id','api/:version.Admin/updateAdmin');
@@ -105,7 +106,7 @@ Route::group(':version/admin',function (){
 	Route::delete('/batch','api/:version.Admin/batchRemoveAdmin');
 });
 
-Route::group(':version/image', function (){
+Route::group('/:version/image', function (){
 	Route::post('/theme_topic_img','api/:version.Image/uploadThemeTopicImage');
 	Route::post('/theme_head_img','api/:version.Image/uploadThemeHeadImage');
 	Route::post('/category_topic_img','api/:version.Image/uploadCategoryTopicImage');
@@ -113,9 +114,9 @@ Route::group(':version/image', function (){
 	Route::post('/product_detail_img','api/:version.Image/uploadProductDetailImage');
 });
 
-Route::get(':version/express_setting','api/:version.Express/getSetting');
+Route::get('/:version/express_setting','api/:version.Express/getSetting');
 
-Route::group(':version/express', function (){
+Route::group('/:version/express', function (){
 	Route::get('/all', 'api/:version.Express/getAll');
 	Route::post('', 'api/:version.Express/addExpress');
 	Route::put('/:id', 'api/:version.Express/updateExpress', [], ['id' => '\d+']);
@@ -123,6 +124,7 @@ Route::group(':version/express', function (){
 	Route::delete('/batch', 'api/:version.Express/batchRemoveExpress');
 });
 
-Route::group(':version/buynow', function (){
+Route::group('/:version/buynow', function (){
 	Route::get('/:id', 'api/:version.Product/getOneBuyNow', [], ['id' => '\d+']);
+});
 });

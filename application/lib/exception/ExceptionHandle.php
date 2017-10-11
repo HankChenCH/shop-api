@@ -29,14 +29,14 @@ class ExceptionHandle extends Handle
             $this->errorCode = $e->errorCode;
         }else{
             //如果是开发环境就返回原始错误处理结果
-             if (config('app_debug')) {
-                 return parent::render($e);
-             }else{
+            if (config('app_debug')) {
+                return parent::render($e);
+            }else{
                  $this->code = 500;
                  $this->msg = '服务器内部错误';
                  $this->errorCode = 999;
                  $this->recordErrorLog($e);
-             }
+            }
         }
 
         $request = Request::instance();
@@ -46,7 +46,7 @@ class ExceptionHandle extends Handle
             'msg' => $this->msg,
             'request_url' => $request->url()
         ];
-
+        //var_dump(function_exists('json'));
         return json($result,$this->code);
     }
 
