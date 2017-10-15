@@ -76,6 +76,7 @@ Route::group('/:version/order', function (){
 	Route::post('','api/:version.Order/placeOrder');
 	Route::get('/by_user','api/:version.Order/getSummaryByUser');
 	Route::get('/by_admin','api/:version.Order/getSummaryByAdmin');
+	Route::get('/ticket/:bid','api/:version.Order/getTicketByBatchID',[],['bid'=>'\d+']);
 	Route::get('/:id','api/:version.Order/getDetail',[],['id'=>'\d+']);
 	Route::get('buynow/:bid', 'api/:version.Order/getBuyNowByUser');
 	Route::put('/by_admin/closed', 'api/:version.Order/closeOrders');
@@ -112,6 +113,7 @@ Route::group('/:version/image', function (){
 	Route::post('/category_topic_img','api/:version.Image/uploadCategoryTopicImage');
 	Route::post('/product_main_img','api/:version.Image/uploadProductMainImage');
 	Route::post('/product_detail_img','api/:version.Image/uploadProductDetailImage');
+	Route::post('/buy_now_rules_img','api/:version.Image/uploadBuyNowRulesImage');
 });
 
 Route::get('/:version/express_setting','api/:version.Express/getSetting');

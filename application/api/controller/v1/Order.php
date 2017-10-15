@@ -96,6 +96,22 @@ class Order extends BaseController
 		return $orders;
 	}
 
+	public function getTicketByBatchID($bid)
+	{
+		$tickets = OrderProductModel::where('batch_id', $bid)
+					->with('order')
+					->with('order.user')
+					->select();
+
+		if ($tickets->isEmpty()) {
+			throw new OrderException([
+				'msg' => '该抢购暂未出票'	
+			]);
+		}
+
+		return $tickets;
+	}
+
 	public function getDetail($id)
 	{
 		(new IDMustBePostiveInt())->goCheck();
@@ -115,16 +131,16 @@ class Order extends BaseController
 		$uid = TokenService::getCurrentUid();
 
 		$buyNowOrders = OrderProductModel::where('batch_id', $bid)
-							->with(['order' => function ($query) use ($uid) {
-								$query->where('user_id', $uid);
-							}])
+							->with('order')
 							->select();
 
-		if ($buyNowOrders->isEmpty()) {
-			return [];
+		foreach ($buyNowOrders as $key => $value) {
+			if ($value->order->user_id == $uid) {
+				return true;
+			}
 		}
 
-		return $buyNowOrders;
+		return false;
 	}
 
 	public function updatePrice($id)

@@ -81,4 +81,17 @@ class Image extends BaseController
 
         return $image;
     }
+
+    public function uploadBuyNowRulesImage()
+    {
+        $image = ImageService::uploadToQiNiu('rulesImage', 'buy_now_rules', ['size'=>156780,'ext'=>'jpg,png']);
+
+        if (!$image){
+            throw new ImageException([
+                'msg' => '保存图片失败'
+            ]);
+        }
+
+        return $image;
+    }
 }

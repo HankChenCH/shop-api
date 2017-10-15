@@ -263,7 +263,10 @@ class Order
 			$pStatus['totalPrice'] = $pStatus['price'] * $oCount;
 
 			if (isset($product['buy_now'])) {
-				if ($product['buy_now'][0]['stock'] - $oCount >= 0) {
+				$now = time();
+				if ($product['buy_now'][0]['stock'] - $oCount >= 0 
+					&& $product['buy_now'][0]['start_time'] > $now
+					&& $product['buy_now'][0]['end_time'] < $now) {
 					$pStatus['haveStock'] = true;
 				}
 				$pStatus['price'] = $product['buy_now'][0]['price'];
@@ -295,11 +298,11 @@ class Order
 
 		if (count($oBatchID) > 0) {
 			$products = Product::with(['buyNow' => function ($query) use ($oBatchID){
-								$query->where('id', 'in', $oBatchID);
-							}])
-							->select($oPids)
-							->visible(['id','name','price','stock','main_img_url','type', 'buy_now'])
-							->toArray();
+					$query->where('id', 'in', $oBatchID);
+				}])
+				->select($oPids)
+				->visible(['id','name','price','stock','main_img_url','type', 'buy_now'])
+				->toArray();
 		} else {
 			$products = Product::all($oPids)
 				->visible(['id','name','price','stock','main_img_url','type'])
