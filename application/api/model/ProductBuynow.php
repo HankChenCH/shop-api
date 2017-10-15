@@ -15,13 +15,13 @@ class ProductBuynow extends BaseModel
 		return $buyNow;
 	}
 
-	public function getStartTimeAttr($value, $data)
-	{
-		return $this->timeFormat($value, $data, 'Y-m-d H:i');
-	}
+	// public function getStartTimeAttr($value, $data)
+	// {
+	// 	return $this->timeFormat($value, $data, 'Y-m-d H:i');
+	// }
 
-	public function getEndTimeAttr($value, $data)
-	{
-		return $this->timeFormat($value, $data, 'Y-m-d H:i');
-	}
+	// public function getEndTimeAttr($value, $data)
+	// {
+	// 	return $this->timeFormat($value, $data, 'Y-m-d H:i');
+	// }
 }
