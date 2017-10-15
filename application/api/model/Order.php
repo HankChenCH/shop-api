@@ -57,7 +57,7 @@ class Order extends BaseModel
 	public static function closeOrders($ids = [])
 	{
 		return self::where('id', 'in', $ids)
-				->where('status', 'EQ', OrderStatusEnum::UNPAY)
+				->where('status', 'EQ', OrderStatusEnum::UNPAID)
 				->update(['status' => OrderStatusEnum::CLOSED]);
 	}
 }

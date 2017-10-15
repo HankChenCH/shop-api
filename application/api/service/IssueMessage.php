@@ -50,10 +50,10 @@ class IssueMessage extends WxMessage
 
 		foreach ($orderItemsData as $key => $value) {
 			if ($key > 0) {
-				$tpl += '等';
+				$tpl .= '等';
 				break;
 			}
-			$tpl += $value->ticket[0];
+			$tpl .= $value->ticket[0];
 		}
 
 		return $tpl;

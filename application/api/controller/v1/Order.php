@@ -121,7 +121,7 @@ class Order extends BaseController
 							->select();
 
 		if ($buyNowOrders->isEmpty()) {
-			return null;
+			return [];
 		}
 
 		return $buyNowOrders;

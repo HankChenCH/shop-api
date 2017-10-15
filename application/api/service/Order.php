@@ -237,6 +237,7 @@ class Order
 			'name' => '',
 			'totalPrice' => 0,
 			'batch_no' => null,
+			'batch_id' => 0,
 		];
 
 
