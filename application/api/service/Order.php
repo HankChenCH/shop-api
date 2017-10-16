@@ -265,8 +265,8 @@ class Order
 			if (isset($product['buy_now'])) {
 				$now = time();
 				if ($product['buy_now'][0]['stock'] - $oCount >= 0 
-					&& $product['buy_now'][0]['start_time'] > $now
-					&& $product['buy_now'][0]['end_time'] < $now) {
+					&& $product['buy_now'][0]['start_time'] < $now
+					&& $product['buy_now'][0]['end_time'] > $now) {
 					$pStatus['haveStock'] = true;
 				}
 				$pStatus['price'] = $product['buy_now'][0]['price'];
