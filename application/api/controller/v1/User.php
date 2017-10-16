@@ -40,6 +40,10 @@ class User extends BaseController
 		$data = $validate->getDataOnScene(input('post.'));
 		$user = UserModel::get($uid);
 
+		if (!$user) {
+			throw new UserException();
+		}
+
 		$user->save($data);
 
 		return $uid;
