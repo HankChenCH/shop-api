@@ -195,6 +195,7 @@ class Order
 			'orderPrice' => 0,
 			'expressPrice' => 0,
 			'totalCount' => 0,
+			'hasBuyNow' => false,
 			'pStatusArray' => []
 		];
 
@@ -203,6 +204,10 @@ class Order
 
 			if (!$pStatus['haveStock']) {
 				$status['pass'] = false;
+			}
+
+			if (!is_null($pStatus['batch_no'])) {
+				$status['hasBuyNow'] = true;
 			}
 
 			if ($pStatus['type'] == TypeEnum::COUPON) {

@@ -18,7 +18,7 @@ class Pay extends BaseController
         'checkExclusiveScope' => ['only' => 'getPreOrder']
     ];
 
-    public function getPreOrder($id='', $bid='')
+    public function getPreOrder($id='')
     {
         /*
 			请求微信的预订单接口，生成预订单信息返回给小程序拉起支付
@@ -33,7 +33,7 @@ class Pay extends BaseController
 			9、将生成的参数返回给小程序
         */
         (new IDMustBePostiveInt())->goCheck();
-        $pay = new PayService($id, $bid);
+        $pay = new PayService($id);
         return $pay->pay();
     }
 
