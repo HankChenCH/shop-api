@@ -23,16 +23,14 @@ class Pay
 {
     private $orderID;
     private $orderNO;
-    private $batchID;
 
-    public function __construct($orderID, $batchID)
+    public function __construct($orderID)
     {
         if (!$orderID){
             throw new Exception('订单号不允许为空');
         }
 
         $this->orderID = $orderID;
-        $this->batchID = $batchID;
     }
 
     public function pay()
