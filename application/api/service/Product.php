@@ -10,8 +10,12 @@ namespace app\api\service;
 
 use app\api\model\Product as ProductModel;
 use app\api\model\ProductSales as ProductSalesModel;
+use app\api\model\ProductBuynow as BuyNowModel;
 use app\api\model\ProductDetail;
 use app\api\model\ProductProperty;
+use app\api\model\BuyNowRadis;
+use app\lib\exception\BuyNowException;
+use think\Db;
 
 class Product
 {
@@ -81,5 +85,37 @@ class Product
 		$productSales = ProductSalesModel::countSalesToNow($countTime, $productID);
 
 		return $productSales;
+	}
+
+	public static function createBuyNow($productID, $buyNowData)
+	{
+		Db::startTrans();
+		try {
+
+			$buyNow = BuyNowModel::createOne($productID, $buyNowData);
+
+			if (!$buyNow) {
+				throw new BuyNowException([
+					'msg' => '开启秒杀失败'
+				]);
+			}
+
+			$buyNowRadis = new BuyNowRadis($buyNow->id);
+
+			if (!$buyNowRadis->cacheData($buyNow)) {
+				throw new BuyNowException([
+					'msg' => '缓存数据失败'
+				]);	
+			}
+
+			Db::commit();
+			return $buyNow;
+		} catch (\Exception $e) {
+
+			Db::rollback();
+			throw new BuyNowException([
+				'msg' => $e->getMessage();
+			]);
+		}
 	}
 }

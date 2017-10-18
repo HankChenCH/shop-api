@@ -207,13 +207,7 @@ class Product extends BaseController
 
 		$data = $validate->getDataOnScene(input('post.'));
 
-		$buyNow = BuyNowModel::createOne($id, $data);
-
-		if (!$buyNow) {
-			throw new BuyNowException([
-				'msg' => '开启秒杀失败'
-			]);
-		}
+		$buyNow = ProductService::createBuyNow($id, $data);
 
 		return $buyNow;
 	}

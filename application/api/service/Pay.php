@@ -40,10 +40,6 @@ class Pay
         $status = $orderService->checkOrderStock($this->orderID);
         if (!$status['pass']) {
 
-            if ($status['hasBuyNow']) {
-                OrderModel::destroy($this->orderID);
-            }
-
             return $status;
         }
 
