@@ -33,12 +33,13 @@ class BuyNowRedis extends BaseRedis
 		return unserialize($buyNow);
 	}
 
-	public static batchDecrStock($orderProduct)
+	public static function batchDecrStock($orderProduct)
 	{
 		$redis = self::getRedis();
 		
 		foreach ($orderProduct as $singleProduct) {
 			if ($redis->decr(self::KEY_PREFIX . 'stock:' . $singleProduct['batch_id'], $singleProduct['counts']) < 0) {
+				$redis->incr(self::KEY_PREFIX . 'stock:' . $singleProduct['batch_id'], $singleProduct['counts']);
 				return false;
 			}
 		}
