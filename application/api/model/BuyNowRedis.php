@@ -34,12 +34,14 @@ class BuyNowRedis extends BaseRedis
 
 		$buyNow = $redis->get(self::$dataPrefix . $buyNowID);
 
+		$buyNowObj = unserialize($buyNow);
+
 		if ($syncStock) {
 			$nowStock = self::getStock($buyNowID);
-			$buyNow->stock = intval($nowStock);
+			$buyNowObj->stock = intval($nowStock);
 		}
 
-		return unserialize($buyNow);
+		return $buyNowObj;
 	}
 
 	public static function getStock($buyNowID)
