@@ -14,6 +14,7 @@ use app\api\model\OrderLog as OrderLogModel;
 use app\api\model\UserAddress;
 use app\api\model\OrderProduct;
 use app\api\model\ProductBuyNow;
+use app\api\model\BuyNowRedis;
 use app\lib\exception\OrderException;
 use app\lib\enum\TypeEnum;
 use app\lib\enum\OrderStatusEnum;
@@ -41,7 +42,9 @@ class Order
 
 		$status = $this->getOrderStatus();
 
-		if (!$status['pass']) {
+		if (!$status['pass'] || 
+			($status['isBuyNow'] && !BuyNowRedis::batchDecr($status['pStatusArray']))
+		) {
 			$status['order_id'] = -1;
 			return $status;
 		}
@@ -193,6 +196,7 @@ class Order
 	{
 		$status = [
 			'pass' => true,
+			'isBuyNow' => false,
 			'type' => TypeEnum::ENTITY,
 			'orderPrice' => 0,
 			'expressPrice' => 0,
@@ -203,10 +207,17 @@ class Order
 		foreach ($this->oProducts as $oProduct) {
 			$pStatus = $this->getProductStatus($oProduct,$this->products);
 
+			//是否有货
 			if (!$pStatus['haveStock']) {
 				$status['pass'] = false;
 			}
 
+			//是否抢购
+			if (isset($pStatus['batch_id'])) {
+				$status['isBuyNow'] = true;
+			}
+
+			//订单种类（卡卷或普通）
 			if ($pStatus['type'] == TypeEnum::COUPON) {
 				$status['type'] = TypeEnum::COUPON;
 			}
