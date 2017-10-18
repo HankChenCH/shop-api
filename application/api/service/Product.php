@@ -13,9 +13,8 @@ use app\api\model\ProductSales as ProductSalesModel;
 use app\api\model\ProductBuynow as BuyNowModel;
 use app\api\model\ProductDetail;
 use app\api\model\ProductProperty;
-use app\api\model\BuyNowRadis;
+use app\api\model\BuyNowRedis;
 use app\lib\exception\BuyNowException;
-use think\Db;
 
 class Product
 {
@@ -89,33 +88,28 @@ class Product
 
 	public static function createBuyNow($productID, $buyNowData)
 	{
-		Db::startTrans();
-		try {
+		$buyNow = BuyNowModel::createOne($productID, $buyNowData);
 
-			$buyNow = BuyNowModel::createOne($productID, $buyNowData);
-
-			if (!$buyNow) {
-				throw new BuyNowException([
-					'msg' => '开启秒杀失败'
-				]);
-			}
-
-			$buyNowRadis = new BuyNowRadis($buyNow->id);
-
-			if (!$buyNowRadis->cacheData($buyNow)) {
-				throw new BuyNowException([
-					'msg' => '缓存数据失败'
-				]);	
-			}
-
-			Db::commit();
-			return $buyNow;
-		} catch (\Exception $e) {
-
-			Db::rollback();
+		if (!$buyNow) {
 			throw new BuyNowException([
-				'msg' => $e->getMessage();
+				'msg' => '开启秒杀失败'
 			]);
 		}
+
+		$buyNowRedis = new BuyNowRedis($buyNow->id);
+
+		if (!$buyNowRedis->cacheData($buyNow)) {
+			throw new BuyNowException([
+				'msg' => '缓存数据失败'
+			]);	
+		}
+
+		if (!$buyNowRedis->cacheStock($buyNow->stock)) {
+			throw new BuyNowException([
+				'msg' => '缓存数据失败'
+			]);
+		}
+
+		return $buyNow;
 	}
 }
