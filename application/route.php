@@ -128,5 +128,5 @@ Route::group('/:version/express', function (){
 
 Route::group('/:version/buynow', function (){
 	Route::get('/:id', 'api/:version.Product/getOneBuyNow', [], ['id' => '\d+']);
-});
+	Route::get('/:id/stock', 'api/:version.Product/getBuyNowStock', [], ['id' => '\d+']);
 });

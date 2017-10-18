@@ -134,7 +134,7 @@ class Product extends BaseController
 	{
 		(new IDMustBePostiveInt)->goCheck();
 
-		$buyNow = BuyNowRedis::get($id);
+		$buyNow = BuyNowRedis::getData($id);
 		
 		if (!$buyNow) {
 			$buyNow = BuyNowModal::get($id);
@@ -147,6 +147,17 @@ class Product extends BaseController
 		}
 
 		return array_merge($buyNow->toArray(), ['serverNow' => time()]);
+	}
+
+	public function getBuyNowStock($id)
+	{
+		$nowStock = BuyNowRedis::getStock($id);
+
+		if (!$nowStock || $nowStock < 0) {
+			return 0;
+		}
+
+		return $nowStock;
 	}
 
 	public function getSearchByKeyWord($keyword, $page, $size)
