@@ -20,6 +20,7 @@ use app\api\service\Product as ProductService;
 use app\api\model\Product as ProductModel;
 use app\api\model\ProductBuynow as BuyNowModel;
 use app\api\model\SearchWord as SearchWordModel;
+use app\api\model\BuyNowRedis;
 use app\lib\enum\SaveFileFromEnum;
 use app\lib\exception\ProductException;
 use app\lib\exception\ParameterException;
@@ -133,8 +134,11 @@ class Product extends BaseController
 	{
 		(new IDMustBePostiveInt)->goCheck();
 
-		$buyNow = BuyNowModel::where('id', $id)
-						->find();
+		$buyNow = BuyNowRedis::get($id);
+		
+		if (!$buyNow) {
+			$buyNow = BuyNowModal::get($id);
+		}
 
 		if (!$buyNow) {
 			throw new BuyNowException([
