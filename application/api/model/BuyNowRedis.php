@@ -25,4 +25,11 @@ class BuyNowRedis extends BaseRedis
 
 		return $redis->setNx(self::KEY_PREFIX . 'stock:' . $this->batchID, $stock);
 	}
+
+	public static function get($buyNowID)
+	{
+		$redis = self::getRedis();
+		$buyNow = $redis->get(self::KEY_PREFIX . 'data:' . $buyNowID);
+		return unserialize($buyNow);
+	}
 }
