@@ -14,18 +14,18 @@ class BuyNowRedis extends BaseRedis
 		$this->batchID = $buyNowID;
 	}
 
-	public function cacheData($data)
+	public function cacheData($data, $liveTime = 600)
 	{
 		$redis = self::getRedis();
 
-		return $redis->setNx(self::$dataPrefix . $this->batchID,serialize($data));
+		return $redis->setEx(self::$dataPrefix . $this->batchID, $liveTime, serialize($data));
 	}
 
-	public function cacheStock($stock)
+	public function cacheStock($stock, $liveTime = 600)
 	{
 		$redis = self::getRedis();
 
-		return $redis->setNx(self::$stockPrefix . $this->batchID, $stock);
+		return $redis->setEx(self::$stockPrefix . $this->batchID, $liveTime, $stock);
 	}
 
 	public static function getData($buyNowID, $syncStock = true)

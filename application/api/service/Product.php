@@ -98,15 +98,17 @@ class Product
 
 		$buyNowRedis = new BuyNowRedis($buyNow->id);
 
-		if (!$buyNowRedis->cacheData($buyNow)) {
+		$ttl = $buyNow->end_time - time() + config('setting.order_close_time') * 60;
+
+		if (!$buyNowRedis->cacheData($buyNow, $ttl)) {
 			throw new BuyNowException([
-				'msg' => '缓存数据失败'
+				'msg' => '秒杀开启成功，但缓存秒杀数据失败'
 			]);	
 		}
 
-		if (!$buyNowRedis->cacheStock($buyNow->stock)) {
+		if (!$buyNowRedis->cacheStock($buyNow->stock, $ttl)) {
 			throw new BuyNowException([
-				'msg' => '缓存数据失败'
+				'msg' => '秒杀开启成功，但缓存秒杀库存失败'
 			]);
 		}
 
