@@ -18,7 +18,7 @@ class BuyNowRedis extends BaseRedis
 	{
 		$redis = self::getRedis();
 
-		return $redis->setNx(self::$dataPrefix . $this->batchID, serialize($data));
+		return $redis->setPx(self::$dataPrefix . $this->batchID, $data->end_time + 600,serialize($data));
 	}
 
 	public function cacheStock($stock)
