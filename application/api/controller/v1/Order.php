@@ -130,17 +130,19 @@ class Order extends BaseController
 	{
 		$uid = TokenService::getCurrentUid();
 
-		$buyNowOrders = OrderProductModel::where('batch_id', $bid)
-							->with('order')
-							->select();
+		// $buyNowOrders = OrderProductModel::where('batch_id', $bid)
+		// 					->with('order')
+		// 					->select();
 
-		foreach ($buyNowOrders as $key => $value) {
-			if ($value->order->user_id == $uid) {
-				return true;
-			}
-		}
+		// foreach ($buyNowOrders as $key => $value) {
+		// 	if ($value->order->user_id == $uid) {
+		// 		return true;
+		// 	}
+		// }
 
-		return false;
+		// return false;
+
+		return OrderService::checkHasBuy($uid, [$bid]);
 	}
 
 	public function updatePrice($id)

@@ -29,6 +29,8 @@ class Order
 
 	protected $oExpress;
 
+	protected $oBatchIDs;
+
 	protected $products;
 
 	protected $uid;
@@ -42,7 +44,8 @@ class Order
 
 		$status = $this->getOrderStatus();
 
-		if (!$status['pass'] || 
+		if (self::checkHasBuy($this->$uid, $this->oBatchIDs) ||
+			!$status['pass'] || 
 			($status['isBuyNow'] && !BuyNowRedis::batchDecr($status['pStatusArray']))
 		) {
 			$status['order_id'] = -1;
@@ -297,21 +300,47 @@ class Order
 		return $pStatus;
 	}
 
+	public static function checkHasBuy($uid, $oBatchIDs)
+	{
+		if (is_null($oBatchIDs)) {
+			return false;
+		}
+
+		$orders = OrderProduct::with(['order' => 
+					function ($query) use ($uid){
+						$query->where('user_id', '=', $uid);
+					}
+				])
+				->where('batch_id', 'in', $oBatchIDs)
+				->select()
+				->filter(function ($item){
+					return !is_null($item->order);
+				});
+
+		if ($orders->isEmpty()) {
+			return false;
+		}
+
+		return $orders;
+	}
+
 	private function getProductsByOrder()
 	{
 		$oPids = [];
-		$oBatchID = [];
+		$oBatchIDs = [];
 		foreach ($this->oProducts as $oProduct) {
 			array_push($oPids, $oProduct['product_id']);
 
 			if (isset($oProduct['batch_id']) && !empty($oProduct['batch_id'])) {
-				array_push($oBatchID, $oProduct['batch_id']);
+				array_push($oBatchIDs, $oProduct['batch_id']);
 			}
 		}
 
-		if (count($oBatchID) > 0) {
-			$products = Product::with(['buyNow' => function ($query) use ($oBatchID){
-					$query->where('id', 'in', $oBatchID);
+		$this->oBatchIDs = $oBatchIDs;
+
+		if (count($oBatchIDs) > 0) {
+			$products = Product::with(['buyNow' => function ($query) use ($oBatchIDs){
+					$query->where('id', 'in', $oBatchIDs);
 				}])
 				->select($oPids)
 				->visible(['id','name','price','stock','main_img_url','type', 'buy_now'])
