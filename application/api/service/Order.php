@@ -44,9 +44,9 @@ class Order
 
 		$status = $this->getOrderStatus();
 
-		if (self::checkHasBuy($this->$uid, $this->oBatchIDs) ||
+		if (self::checkHasBuy($this->uid, $this->oBatchIDs) ||
 			!$status['pass'] || 
-			($status['isBuyNow'] && !BuyNowRedis::batchDecr($status['pStatusArray']))
+			($status['isBuyNow'] && !BuyNowRedis::batchDecrStock($status['pStatusArray']))
 		) {
 			$status['pass'] = false;
 			$status['order_id'] = -1;
