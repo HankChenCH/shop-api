@@ -126,6 +126,20 @@ class Order extends BaseController
 		return $orderDetail->hidden(['prepay_id']);
 	}
 
+	public function getDetailByAdmin($id)
+	{
+		(new IDMustBePostiveInt())->goCheck();
+	
+		$orderDetail = OrderModel::with(['user','logs'])
+			->find($id);
+
+		if (!$orderDetail) {
+			throw new OrderException();
+		}
+
+		return $orderDetail;
+	}
+
 	public function getBuyNowByUser($bid)
 	{
 		$uid = TokenService::getCurrentUid();
