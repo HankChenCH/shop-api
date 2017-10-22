@@ -60,7 +60,9 @@ class Order extends BaseController
 	public function getCountsByUser()
 	{
 		$uid = TokenService::getCurrentUid();
+
 		$orders = OrderModel::where('user_id', $uid)
+			->where('status', 'GT', '0')
 			->field("count(*),status")
 			->group('status')
 			->select();
