@@ -75,9 +75,10 @@ Route::group('api', function(){
 
 	Route::group('/:version/order', function (){
 		Route::post('','api/:version.Order/placeOrder');
-		Route::post('/counts','api/:version.Order/getCountsByUser');
+		Route::get('/counts','api/:version.Order/getCountsByUser');
 		Route::get('/by_user','api/:version.Order/getSummaryByUser');
 		Route::get('/by_admin','api/:version.Order/getSummaryByAdmin');
+		Route::get('/by_admin/:id', 'api/:version.Order/getDetailByAdmin');
 		Route::get('/ticket/:bid','api/:version.Order/getTicketByBatchID',[],['bid'=>'\d+']);
 		Route::get('/:id','api/:version.Order/getDetail',[],['id'=>'\d+']);
 		Route::get('buynow/:bid', 'api/:version.Order/getBuyNowByUser');
