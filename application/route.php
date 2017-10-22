@@ -74,7 +74,7 @@ Route::group('api', function(){
 
 	Route::group('/:version/order', function (){
 		Route::post('','api/:version.Order/placeOrder');
-		Route::post('/counts','api/:version.Order/getCountsByUser');
+		Route::get('/counts','api/:version.Order/getCountsByUser');
 		Route::get('/by_user','api/:version.Order/getSummaryByUser');
 		Route::get('/by_admin','api/:version.Order/getSummaryByAdmin');
 		Route::get('/by_admin/:id', 'api/:version.Order/getDetailByAdmin');

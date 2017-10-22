@@ -68,9 +68,10 @@ class Order extends BaseModel
 		return date('Y-m-d H:i:s', $value);
 	}
 
-	public static function getSummaryByUser($uid, $page=1, $size=15)
+	public static function getSummaryByUser($uid, $page=1, $size=15, $status=1)
 	{
 		$paingData = self::where('user_id','=',$uid)
+			->where('status', $status)
 			->order('create_time desc')
 			->paginate($size,true,['page' => $page]);
 

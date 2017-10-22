@@ -64,6 +64,7 @@ class Order extends BaseController
 
 		$orders = OrderModel::where('user_id', $uid)
 			->where('status', 'GT', '0')
+			->where('create_time', 'EGT', time() - 7776000)
 			->field("count(*) AS counts,status")
 			->group('status')
 			->select();
@@ -83,12 +84,12 @@ class Order extends BaseController
 		return $counts;
 	}
 
-	public function getSummaryByUser($page=1, $size=15)
+	public function getSummaryByUser($status, $page=1, $size=15)
 	{
 		(new PagingParameter())->goCheck();
 		$uid = TokenService::getCurrentUid();
 
-		$orders = OrderModel::getSummaryByUser($uid,$page,$size);
+		$orders = OrderModel::getSummaryByUser($uid,$page,$size,$status);
 		if ($orders->isEmpty()) {
 			return [
 				'data' => [],
