@@ -22,6 +22,7 @@ use app\api\model\Order as OrderModel;
 use app\api\model\OrderProduct as OrderProductModel;
 use app\lib\exception\OrderException;
 use app\lib\exception\SuccessMessage;
+use app\lib\enum\OrderStatusEnum;
 
 
 class Order extends BaseController
@@ -63,11 +64,23 @@ class Order extends BaseController
 
 		$orders = OrderModel::where('user_id', $uid)
 			->where('status', 'GT', '0')
-			->field("count(*),status")
+			->field("count(*) AS counts,status")
 			->group('status')
 			->select();
 
-		return $orders;
+		$counts = [];
+	
+		foreach($orders as $key => $value){
+			if ($value['status'] === OrderStatusEnum::UNPAID) {
+				$counts['unpay'] = $value['counts'];
+			} elseif ($value['status'] === OrderStatusEnum::PAID || $value['status'] === OrderStatusEnum::PAID_BUT_OUT_OF) {
+				$counts['package'] = $value['counts'];
+			} elseif ($value['status'] === OrderStatusEnum::DELIVERED) {
+				$counts['delivery'] = $value['counts'];
+			}
+		}
+
+		return $counts;
 	}
 
 	public function getSummaryByUser($page=1, $size=15)
