@@ -11,12 +11,7 @@ namespace app\api\model;
 
 class Theme extends BaseModel
 {
-    protected $hidden = ['update_time','delete_time','topic_img_id','head_img_id'];
-
-    public function topicImg()
-    {
-        return $this->belongsTo('Image','topic_img_id','id');
-    }
+    protected $hidden = ['update_time','delete_time','head_img_id'];
 
     public function headImg()
     {
@@ -30,7 +25,7 @@ class Theme extends BaseModel
 
     public static function getThemeWithProducts($id)
     {
-        $themes = self::with('products,topicImg,headImg')
+        $themes = self::with('products,headImg')
             ->find($id);
 
         return $themes;

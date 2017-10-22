@@ -28,10 +28,24 @@ class Theme extends BaseController
         (new IDConllection())->goCheck();
 
         $ids = explode(',',$ids);
-        $themes = ThemeModel::with('topicImg,headImg')
+        $themes = ThemeModel::with('headImg')
             ->select($ids);
 
         if ($themes->isEmpty()){
+            throw new ThemeException();
+        }
+
+        return $themes;
+    }
+
+    public function getEssenceDetail()
+    {
+        $themes = ThemeModel::with(['headImg','products'])
+                    ->where('is_on','1')
+                    ->order('create_time desc')
+                    ->select();
+
+        if ($themes->isEmpty()) {
             throw new ThemeException();
         }
 
@@ -68,7 +82,7 @@ class Theme extends BaseController
     {
         //验证权限，只有管理员有此权限
 
-        $themes = ThemeModel::with('topicImg,headImg')
+        $themes = ThemeModel::with('headImg')
             ->select();
 
         if ($themes->isEmpty()) {
