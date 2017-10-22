@@ -217,7 +217,7 @@ class Order
 			}
 
 			//是否抢购
-			if (isset($pStatus['batch_id'])) {
+			if (!is_null($pStatus['batch_no'])) {
 				$status['isBuyNow'] = true;
 			}
 
