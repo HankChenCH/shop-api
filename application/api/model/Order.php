@@ -20,6 +20,11 @@ class Order extends BaseModel
 		return $this->belongsTo('User');
 	}
 
+	public function logs()
+	{
+		return $this->hasMany('OrderLog','order_id', 'id');
+	}
+
 	public function getSnapItemsAttr($value)
 	{
 		if (empty($value)) {
@@ -43,6 +48,24 @@ class Order extends BaseModel
 		}
 
 		return json_decode($value);
+	}
+
+	public function getPayTimeAttr($value)
+	{
+		if (empty($value)) {
+			return null;
+		}
+
+		return date('Y-m-d H:i:s',$value);
+	}
+
+	public function getDeliveryTimeAttr($value)
+	{
+		if (empty($value)){
+			return null;
+		}
+
+		return date('Y-m-d H:i:s', $value);
 	}
 
 	public static function getSummaryByUser($uid, $page=1, $size=15)
