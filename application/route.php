@@ -16,6 +16,7 @@ Route::group('api', function(){
 
 	Route::group('/:version/theme',function(){
 		Route::get('',"api/:version.Theme/getSimpleList");
+		Route::get('/essence', '/api/:version.Theme/getEssenceDetail');
 		Route::get('/all','api/:version.Theme/getAllThemes');
 		Route::get('/:id','api/:version.Theme/getComplexOne',[],['id'=>'\d+']);
 		Route::get('/:id/product','api/:version.Theme/getAllProduct',[],['id'=>'\d+']);
