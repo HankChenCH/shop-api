@@ -57,6 +57,17 @@ class Order extends BaseController
 		return $status;
 	}
 
+	public function getCountsByUser()
+	{
+		$uid = TokenService::getCurrentUid();
+		$orders = OrderModel::where('user_id', $uid)
+			->field("count(*),status")
+			->group('status')
+			->select();
+
+		return $orders;
+	}
+
 	public function getSummaryByUser($page=1, $size=15)
 	{
 		(new PagingParameter())->goCheck();
