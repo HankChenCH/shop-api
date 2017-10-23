@@ -446,4 +446,27 @@ class Order
 
 		return json_decode($objStr, true);
 	}
+
+	public static function closeOrdersById($ids = [])
+	{
+		$orders = OrderModel::where('id', 'in', $ids)
+				->where('status', 'EQ', OrderStatusEnum::UNPAID)
+				->select();
+
+		self::reduceBuyNowStockToRedis($orders);
+
+		return OrderModel::close('id', 'in', $ids);
+	}
+
+	public static function reduceBuyNowStockToRedis($orders)
+	{
+		foreach ($orders as $key => $order) {
+            foreach ($order['products'] as $product) {
+                if (!empty($product['batch_id']) && BuyNowRedis::getStock($product['batch_id'])) {
+                    BuyNowRedis::incrStock($product['batch_id'], $product['count']);
+                }
+                // echo $product['batch_id'];
+            }
+        }
+	}
 }

@@ -25,6 +25,11 @@ class Order extends BaseModel
 		return $this->hasMany('OrderLog','order_id', 'id');
 	}
 
+	public function products()
+	{
+		return $this->hasMany('OrderProduct','order_id','id');
+	}
+
 	public function getSnapItemsAttr($value)
 	{
 		if (empty($value)) {
@@ -78,9 +83,9 @@ class Order extends BaseModel
 		return $paingData;
 	} 
 
-	public static function closeOrders($ids = [])
+	public static function close($column, $op, $value)
 	{
-		return self::where('id', 'in', $ids)
+		return self::where($column, $op, $value)
 				->where('status', 'EQ', OrderStatusEnum::UNPAID)
 				->update(['status' => OrderStatusEnum::CLOSED]);
 	}

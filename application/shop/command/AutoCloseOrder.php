@@ -5,7 +5,8 @@ namespace app\shop\command;
 use think\console\Command;
 use think\console\Input;  
 use think\console\Output;
-use app\api\model\Order as OrderModel; 
+use app\api\service\Order as OrderService;
+use app\api\model\Order as OrderModel;
 use app\lib\enum\OrderStatusEnum;
 
 class AutoCloseOrder extends Command  
@@ -26,10 +27,15 @@ class AutoCloseOrder extends Command
 
     	$output->writeln("begin"); 
 
-    	$orders = OrderModel::where('create_time', 'ELT', $minAgo)
+    	$orders = OrderModel::with('products')
+                        ->where('create_time', 'ELT', $minAgo)
     					->where('status', 'EQ', OrderStatusEnum::UNPAID)
-    					->update(['status' => OrderStatusEnum::CLOSED]);
+                        ->select();
 
-        $output->writeln("commplent");  
+        OrderService::reduceBuyNowStockToRedis($orders);
+    		
+        $closed = OrderModel::close('create_time', 'ELT', $minAgo);
+
+        $output->writeln('completed');  
     }  
 }  
