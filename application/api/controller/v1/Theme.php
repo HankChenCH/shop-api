@@ -14,6 +14,8 @@ use app\api\service\ProductManager;
 use app\api\model\Theme as ThemeModel;
 use app\api\validate\IDMustBePostiveInt;
 use app\api\validate\ThemeNew;
+use app\api\validate\ThemeOn;
+use app\api\validate\ThemeRank;
 use app\api\validate\ProductIDConllection;
 use app\lib\exception\ThemeException;
 
@@ -28,7 +30,7 @@ class Theme extends BaseController
         (new IDConllection())->goCheck();
 
         $ids = explode(',',$ids);
-        $themes = ThemeModel::with('headImg')
+        $themes = ThemeModel::with('headImgrout')
             ->select($ids);
 
         if ($themes->isEmpty()){
@@ -42,7 +44,7 @@ class Theme extends BaseController
     {
         $themes = ThemeModel::with(['headImg','products'])
                     ->where('is_on','1')
-                    ->order('create_time desc')
+                    ->order('rank desc')
                     ->select();
 
         if ($themes->isEmpty()) {
@@ -141,6 +143,35 @@ class Theme extends BaseController
         }
 
         return $theme;
+    }
+
+    public function pullOnOff($id)
+    {
+        (new IDMustBePostiveInt)->goCheck();
+
+        $validate = new ThemeOn();
+        $validate->goCheck();
+
+        $is_on = input('put.is_on');
+
+        $theme = ThemeModel::where('id', $id)
+                    ->update(['is_on'=>$is_on]);
+
+        if (!$theme) {
+            throw new ThemeException([
+                'msg' => '主题推荐失败'
+            ]);
+        }
+
+        return $theme;
+    }
+
+    public function setRank()
+    {
+        $validate = new ThemeRank();
+        $validate->goCheck();
+
+        $data = input('put.a');
     }
 
     public function updateProductList($id)

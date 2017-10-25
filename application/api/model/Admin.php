@@ -23,6 +23,7 @@ class Admin extends BaseModel
     {
         $admin = self::where('user_name', '=', $loginName)
                     ->where('password', '=', md5($password))
+                    ->where('state', '=', '1')
                     ->find();
 
         return $admin;
