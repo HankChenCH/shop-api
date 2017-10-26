@@ -45,27 +45,27 @@ class Theme extends BaseModel
     {
         // Db::startTrans();
 
-        var_dump($ranks);
-        exit;
+        // var_dump($ranks);
+        // exit;
 
-        try{
+        // try{
 
             $themes = new self();
 
-            $themes->save(['rank' => 999]);
+            // $themes->save(['rank' => 999]);
 
             $themes->saveAll($ranks);
 
-            Db::commit();
+            // Db::commit();
 
             return $themes;
 
-        } catch (\Exception $e) {
+        // } catch (\Exception $e) {
 
-            Db::rollback();
-            throw new ThemeException([
-                'msg' => '主题更新排序失败'
-            ]);
-        }
+        //     Db::rollback();
+        //     throw new ThemeException([
+        //         'msg' => '主题更新排序失败'
+        //     ]);
+        // }
     }
 }
