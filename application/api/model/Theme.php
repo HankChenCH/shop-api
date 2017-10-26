@@ -43,7 +43,10 @@ class Theme extends BaseModel
 
     public static function resetRank($ranks)
     {
-        Db::startTrans();
+        // Db::startTrans();
+
+        var_dump($ranks);
+        exit;
 
         try{
 
