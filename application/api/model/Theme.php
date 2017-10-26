@@ -8,6 +8,8 @@
 
 namespace app\api\model;
 
+use app\lib\exception\ThemeException;
+use think\Db;
 
 class Theme extends BaseModel
 {
@@ -37,5 +39,30 @@ class Theme extends BaseModel
             ->find($id);
 
         return $themes;
+    }
+
+    public static function resetRank($ranks)
+    {
+        Db::startTrans();
+
+        try{
+
+            $themes = new self();
+
+            $themes->save(['rank' => Null]);
+
+            $themes->saveAll($ranks);
+
+            Db::commit();
+
+            return $themes;
+
+        } catch (\Exception $e) {
+
+            Db::rollback();
+            throw new ThemeException([
+                'msg' => '主题更新排序失败'
+            ]);
+        }
     }
 }

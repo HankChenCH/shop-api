@@ -171,7 +171,11 @@ class Theme extends BaseController
         $validate = new ThemeRank();
         $validate->goCheck();
 
-        $data = input('put.a');
+        $data = input('put.ranks/a');
+
+        $themes = ThemeModel::resetRank($data);
+
+        return $themes;
     }
 
     public function updateProductList($id)

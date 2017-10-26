@@ -21,8 +21,8 @@ Route::group('api', function(){
 		Route::get('/:id','api/:version.Theme/getComplexOne',[],['id'=>'\d+']);
 		Route::get('/:id/product','api/:version.Theme/getAllProduct',[],['id'=>'\d+']);
 		Route::post('','api/:version.Theme/createTheme');
+		Route::put('/rank', 'api/:version.Theme/setRank');
 		Route::put('/:id/pullOnOff','api/:version.Theme/pullOnOff');
-		Route::put('/rank_reset', 'api/:version.Theme/setRank');
 		Route::put('/:id/product','api/:version.Theme/updateProductList',[],['id'=>'\d+']);
 		Route::put('/:id','api/:version.Theme/updateTheme');
 		Route::delete('/:id','api/:version.Theme/removeTheme',[],['id'=>'\d+']);
