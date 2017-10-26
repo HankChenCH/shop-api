@@ -44,7 +44,7 @@ class Theme extends BaseController
     {
         $themes = ThemeModel::with(['headImg','products'])
                     ->where('is_on','1')
-                    ->order('rank desc')
+                    ->order('rank asc')
                     ->select();
 
         if ($themes->isEmpty()) {
