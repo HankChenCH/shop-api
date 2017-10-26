@@ -86,6 +86,7 @@ class Theme extends BaseController
 
         $themes = ThemeModel::with('headImg')
             ->order('rank asc')
+            ->order('is_on desc')
             ->select();
 
         if ($themes->isEmpty()) {
