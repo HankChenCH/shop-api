@@ -7,13 +7,13 @@ use app\lib\exception\ThemeException;
 class ThemeRank extends BaseValidate
 {
 	protected $rule = [
-		'ranks' => 'require|isNotArrayEmpty|checkRanks'
+		'ranks' => 'checkRanks'
 	];
 
 	protected $singleRule = [
 		'id' => 'require|isPostiveInteger',
 		'rank' => 'require|number'
-	]
+	];
 
 	protected function checkRanks($values)
 	{
