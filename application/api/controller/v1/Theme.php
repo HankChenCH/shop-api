@@ -85,6 +85,7 @@ class Theme extends BaseController
         //验证权限，只有管理员有此权限
 
         $themes = ThemeModel::with('headImg')
+            ->order('rank asc')
             ->select();
 
         if ($themes->isEmpty()) {
