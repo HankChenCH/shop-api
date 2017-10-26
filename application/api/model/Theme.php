@@ -49,7 +49,7 @@ class Theme extends BaseModel
 
             $themes = new self();
 
-            $themes->save(['rank' => Null]);
+            $themes->save(['rank' => 999]);
 
             $themes->saveAll($ranks);
 
