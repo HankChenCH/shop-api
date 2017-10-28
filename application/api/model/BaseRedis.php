@@ -8,15 +8,27 @@ class BaseRedis
 	protected static $server_ip = '127.0.0.1';
 	protected static $port = 6397;
 
-	protected static $keyPrefix = 'base_';
-	protected static $dataPrefix = self::$keyPrefix . 'data:';
+	protected static $self_instance = null;
+
+	protected $keyPrefix = 'base_';
+	protected $dataPrefix;
 	protected $keyID;
+
+	public function __construct()
+	{
+		self::$self_instance = $this;
+		$this->dataPrefix = $this->keyPrefix . 'data:';
+	}
 
 	public static function getRedis()
 	{
 		if (is_null(self::$redis_instance)) {
 			self::$redis_instance = new \Redis();
 			self::$redis_instance->connect(self::$server_ip);
+		}
+
+		if (is_null(self::$self_instance)) {
+			self::$self_instance = new self();
 		}
 
 		return self::$redis_instance;
@@ -26,14 +38,14 @@ class BaseRedis
 	{
 		$redis = self::getRedis();
 
-		return $redis->setEx(self::$dataPrefix . $this->keyID, $liveTime, serialize($data));
+		return $redis->setEx($this->$dataPrefix . $this->keyID, $liveTime, serialize($data));
 	}
 
 	public static function getData($keyID)
 	{
 		$redis = self::getRedis();
 
-		$data = $redis->get(self::$dataPrefix . $keyID);
+		$data = $redis->get($this->$dataPrefix . $keyID);
 
 		if (!$data) {
 			return false;
