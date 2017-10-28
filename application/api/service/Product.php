@@ -127,7 +127,8 @@ class Product
 
 	public static function getProductAllDetail($id)
 	{
-		$product = ProductRedis::getData($id);
+		$productRedis = new ProductRedis($id);
+		$product = $productRedis->getData($id);
 
         if ($product) {
         	return $product;

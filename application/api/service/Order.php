@@ -42,11 +42,12 @@ class Order
 		$this->products = $this->getProductsByOrder();
 		$this->uid = $uid;
 
+		$buyNowRedis = new BuyNowRedis(0);
 		$status = $this->getOrderStatus();
 
 		if (self::checkHasBuy($this->uid, $this->oBatchIDs) ||
 			!$status['pass'] || 
-			($status['isBuyNow'] && !BuyNowRedis::batchDecrStock($status['pStatusArray']))
+			($status['isBuyNow'] && !$buyNowRedis->batchDecrStock($status['pStatusArray']))
 		) {
 			$status['pass'] = false;
 			$status['order_id'] = -1;
@@ -460,10 +461,11 @@ class Order
 
 	public static function reduceBuyNowStockToRedis($orders)
 	{
+		$buyNowRedis = new BuyNowRedis();
 		foreach ($orders as $key => $order) {
             foreach ($order['products'] as $product) {
-                if (!empty($product['batch_id']) && BuyNowRedis::getStock($product['batch_id'])) {
-                    BuyNowRedis::incrStock($product['batch_id'], $product['count']);
+                if (!empty($product['batch_id']) && $buyNowRedis->getStock($product['batch_id'])) {
+                    $buyNowRedis->incrStock($product['batch_id'], $product['count']);
                 }
                 // echo $product['batch_id'];
             }

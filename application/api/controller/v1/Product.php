@@ -103,11 +103,11 @@ class Product extends BaseController
 
 	public function getOne($id)
 	{
-        (new IDMustBePostiveInt())->goCheck();
+        	(new IDMustBePostiveInt())->goCheck();
 
-        $product = ProductService::getProductAllDetail($id);
+        	$product = ProductService::getProductAllDetail($id);
 
-        return $product;
+        	return $product;
 	}
 
 	public function getAllBuyNow($id)
@@ -130,8 +130,9 @@ class Product extends BaseController
 	public function getOneBuyNow($id)
 	{
 		(new IDMustBePostiveInt)->goCheck();
-
-		$buyNow = BuyNowRedis::getData($id);
+		
+		$buyNowRedis = new BuyNowRedis($id);
+		$buyNow = $buyNowRedis->getData($id);
 		
 		if (!$buyNow) {
 			$buyNow = BuyNowModal::get($id);
@@ -148,7 +149,8 @@ class Product extends BaseController
 
 	public function getBuyNowStock($id)
 	{
-		$nowStock = BuyNowRedis::getStock($id);
+		$buyNowRedis = new BuyNowRedis($id);
+		$nowStock = $buyNowRedis->getStock($id);
 
 		if (!$nowStock || $nowStock < 0) {
 			return 0;
