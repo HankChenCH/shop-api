@@ -115,7 +115,7 @@ class Product extends BaseController
 		(new IDMustBePostiveInt)->goCheck();
 
 		$buyNows = BuyNowModel::where('product_id', $id)
-						->order('create desc')
+						->order('create_time desc')
 						->select();
 
 		if ($buyNows->isEmpty()) {
