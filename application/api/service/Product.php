@@ -14,6 +14,8 @@ use app\api\model\ProductBuynow as BuyNowModel;
 use app\api\model\ProductDetail;
 use app\api\model\ProductProperty;
 use app\api\model\BuyNowRedis;
+use app\api\model\ProductRedis;
+use app\lib\exception\ProductException;
 use app\lib\exception\BuyNowException;
 
 class Product
@@ -89,6 +91,7 @@ class Product
 	public static function createBuyNow($productID, $buyNowData)
 	{
 		$buyNow = BuyNowModel::createOne($productID, $buyNowData);
+		$product = ProductModel::getProductDetail($productID);
 
 		if (!$buyNow) {
 			throw new BuyNowException([
@@ -96,6 +99,7 @@ class Product
 			]);
 		}
 
+		$productRedis = new ProductRedis($productID);
 		$buyNowRedis = new BuyNowRedis($buyNow->id);
 
 		$ttl = $buyNow->end_time - time() + config('setting.order_close_time') * 60;
@@ -112,6 +116,29 @@ class Product
 			]);
 		}
 
+		if (!$productRedis->cacheData($product, $ttl)) {
+			throw new BuyNowException([
+				'msg' => '秒杀开启成功，但缓存商品数据失败'
+			]);	
+		}
+
 		return $buyNow;
+	}
+
+	public static function getProductAllDetail($id)
+	{
+		$product = ProductRedis::getData($id);
+
+        if ($product) {
+        	return $product;
+        }
+
+        $product = ProductModel::getProductDetail($id);
+
+        if (!$product) {
+        	throw new ProductException();
+        }
+
+        return $product;
 	}
 }

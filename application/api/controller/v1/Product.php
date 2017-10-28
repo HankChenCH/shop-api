@@ -105,11 +105,7 @@ class Product extends BaseController
 	{
         (new IDMustBePostiveInt())->goCheck();
 
-        $product = ProductModel::getProductDetail($id);
-
-        if (!$product) {
-        	throw new ProductException();
-        }
+        $product = ProductService::getProductAllDetail($id);
 
         return $product;
 	}
@@ -119,6 +115,7 @@ class Product extends BaseController
 		(new IDMustBePostiveInt)->goCheck();
 
 		$buyNows = BuyNowModel::where('product_id', $id)
+						->order('create desc')
 						->select();
 
 		if ($buyNows->isEmpty()) {

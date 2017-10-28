@@ -4,39 +4,27 @@ namespace app\api\model;
 
 class BuyNowRedis extends BaseRedis
 {
-	const KEY_PREFIX = 'buynow_';
-	protected static $dataPrefix = self::KEY_PREFIX . 'data:';
-	protected static $stockPrefix = self::KEY_PREFIX . 'stock:';
-	protected $batchID;
+	protected static $keyPrefix = 'buynow_';
+
+	protected static $stockPrefix = self::$keyPrefix . 'stock:';
 
 	public function __construct($buyNowID)
 	{
-		$this->batchID = $buyNowID;
-	}
-
-	public function cacheData($data, $liveTime = 600)
-	{
-		$redis = self::getRedis();
-
-		return $redis->setEx(self::$dataPrefix . $this->batchID, $liveTime, serialize($data));
+		$this->keyID = $buyNowID;
 	}
 
 	public function cacheStock($stock, $liveTime = 600)
 	{
 		$redis = self::getRedis();
 
-		return $redis->setEx(self::$stockPrefix . $this->batchID, $liveTime, $stock);
+		return $redis->setEx(self::$stockPrefix . $this->keyID, $liveTime, $stock);
 	}
 
 	public static function getData($buyNowID, $syncStock = true)
 	{
-		$redis = self::getRedis();
+		$buyNowObj = parent::getData($buyNowID);
 
-		$buyNow = $redis->get(self::$dataPrefix . $buyNowID);
-
-		$buyNowObj = unserialize($buyNow);
-
-		if ($syncStock) {
+		if ($syncStock && $buyNowObj) {
 			$nowStock = self::getStock($buyNowID);
 			$buyNowObj->stock = intval($nowStock);
 		}
