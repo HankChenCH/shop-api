@@ -10,7 +10,7 @@ class ProductRedis extends BaseRedis
 
 	public function __construct($productID)
 	{
-		parent::__construct();
+		$this->dataPrefix = $this->keyPrefix . 'data:';
 		$this->keyID = $productID;
 	}
 }

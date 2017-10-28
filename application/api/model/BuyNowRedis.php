@@ -10,7 +10,7 @@ class BuyNowRedis extends BaseRedis
 
 	public function __construct($buyNowID)
 	{
-		parent::__construct();
+		$this->dataPrefix = $this->keyPrefix . 'data:';
 		$this->stockPrefix = $this->keyPrefix . 'stock:';
 		$this->keyID = $buyNowID;
 	}
@@ -19,42 +19,42 @@ class BuyNowRedis extends BaseRedis
 	{
 		$redis = self::getRedis();
 
-		return $redis->setEx($this->$stockPrefix . $this->keyID, $liveTime, $stock);
+		return $redis->setEx($this->stockPrefix . $this->keyID, $liveTime, $stock);
 	}
 
-	public static function getData($buyNowID, $syncStock = true)
+	public function getData($buyNowID, $syncStock = true)
 	{
 		$buyNowObj = parent::getData($buyNowID);
 
 		if ($syncStock && $buyNowObj) {
-			$nowStock = self::getStock($buyNowID);
+			$nowStock = $this->getStock($buyNowID);
 			$buyNowObj->stock = intval($nowStock);
 		}
 
 		return $buyNowObj;
 	}
 
-	public static function getStock($buyNowID)
+	public function getStock($buyNowID)
 	{
 		$redis = self::getRedis();
 
-		return $redis->get($this->$stockPrefix . $buyNowID);
+		return $redis->get($this->stockPrefix . $buyNowID);
 	}
 
-	public static function incrStock($buyNowID, $counts = 0)
+	public function incrStock($buyNowID, $counts = 0)
 	{
 		$redis = self::getRedis();
 
-		return $redis->incr($this->$stockPrefix . $buyNowID, $counts);
+		return $redis->incr($this->stockPrefix . $buyNowID, $counts);
 	}
 
-	public static function batchDecrStock($orderProduct)
+	public function batchDecrStock($orderProduct)
 	{
 		$redis = self::getRedis();
 		
 		foreach ($orderProduct as $singleProduct) {
-			if ($redis->decr($this->$stockPrefix . $singleProduct['batch_id'], $singleProduct['counts']) < 0) {
-				self::incrStock($singleProduct['batch_id'], $singleProduct['counts'])
+			if ($redis->decr($this->stockPrefix . $singleProduct['batch_id'], $singleProduct['counts']) < 0) {
+				$this->incrStock($singleProduct['batch_id'], $singleProduct['counts']);
 				return false;
 			}
 		}
