@@ -126,7 +126,9 @@ class Order extends BaseController
 	public function getTicketByBatchID($bid)
 	{
 		$tickets = OrderProductModel::where('batch_id', $bid)
-					->with('order')
+					->with(['order' => function ($query){
+						$query->where('status','>=',0);
+					}])
 					->with('order.user')
 					->select();
 
@@ -213,7 +215,7 @@ class Order extends BaseController
 
 		$ids = explode(',',$ids);
 
-		$orders = OrderModel::closeOrders($ids);
+		$orders = OrderService::closeOrdersById($ids);
 
 		if (!$orders) {
 			throw new OrderException([
