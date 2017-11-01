@@ -22,37 +22,37 @@ class Token
 {
     public function getJwt()
     {
-	$key = config('secure.token_salt');
-	$token = array(
-    		"iss" => "https://zsshitan.com",
-    		"aud" => "weapp",
-    		"iat" => time() - 1000,
-    		"nbf" => time(),
-		"exp" => time() + 7200,
-		"user" => array(
-			"uid" => 2,
-			"name" => "hank",
-		)
-	);
+    	$key = config('secure.token_salt');
+    	$token = array(
+        		"iss" => "https://zsshitan.com",
+        		"aud" => "weapp",
+        		"iat" => time() - 1000,
+        		"nbf" => time(),
+    		    "exp" => time() + 7200,
+    		    "user" => array(
+    			"uid" => 2,
+    			"name" => "hank",
+    		)
+    	);
 
-	/**
-	 * IMPORTANT:
-	 * You must specify supported algorithms for your application. See
-	 * https://tools.ietf.org/html/draft-ietf-jose-json-web-algorithms-40
-	 * for a list of spec-compliant algorithms.
-	 */
-	$jwt = JWT::encode($token, $key);
+    	/**
+    	 * IMPORTANT:
+    	 * You must specify supported algorithms for your application. See
+    	 * https://tools.ietf.org/html/draft-ietf-jose-json-web-algorithms-40
+    	 * for a list of spec-compliant algorithms.
+    	 */
+    	$jwt = JWT::encode($token, $key);
 
-	return [
-		'jwt' => $jwt,
-	];
+    	return [
+    		'jwt' => $jwt,
+    	];
     }
 
     public function getToken($code='')
     {
         (new TokenGet())->goCheck();
         $ut = new UserToken($code);
-        $token = $ut->get();
+        $token = $ut->getJWT();
         return [
             'token' => $token
         ];
@@ -66,7 +66,8 @@ class Token
             ]);
         }
 
-        $valid = TokenService::verifyToken($token);
+        // $valid = TokenService::verifyToken($token);
+        $valid = TokenService::verifyJWT($token);
         return [
             'isValid' => $valid
         ];

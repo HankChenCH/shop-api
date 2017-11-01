@@ -13,7 +13,7 @@ use app\lib\exception\WxException;
 use app\lib\exception\TokenException;
 use app\lib\enum\ScopeEnum;
 
-class UserToken extends Token
+class UserToken extends Token implements GrantToken
 {
     protected $wxAppID;
     protected $wxAppSecret;
@@ -39,12 +39,58 @@ class UserToken extends Token
             if (array_key_exists('errcode',$wxResult)){
                 $this->processLoginError($wxResult);
             }else{
-                return $this->grantToken($wxResult);
+                $tokenType = config('setting.token_type');
+                $method = 'grant' . $tokenType;
+                if (method_exists($this, $method)) {
+                    return $this->$method($wxResult);
+                } else {
+                    throw new \Exception();
+                }
             }
         }
     }
 
-    private function grantToken($wxResult)
+    private function grantJWT($wxResult)
+    {
+        $uid = $this->grantUid($wxResult);
+
+        $userInfo = $this->prepareUserInfo($wxResult, $uid);
+        return self::generateJWT($userInfo);
+    }
+
+    private function grantCache($wxResult)
+    {
+        $uid = $this->grantUid($wxResult);
+
+        $cacheValue = $this->prepareCacheValue($wxResult,$uid);
+        return $this->saveToCache($cacheValue);
+    }
+
+    private function prepareUserInfo($wxResult,$uid)
+    {
+        $info = $wxResult;
+        $info['iss'] = "https://zsshitan.com";
+        $info['aud'] = "weapp";
+        $info['iat'] = time() - 1000;
+        $info['nbf'] = time();
+        $info['exp'] = time() + config('setting.token_expire_in');
+        $info['user'] = [
+            "uid" => 2,
+            "scope" => ScopeEnum::User
+        ];
+
+        return $info;
+    }
+
+    private function prepareCacheValue($wxResult,$uid)
+    {
+        $cacheValue = $wxResult;
+        $cacheValue['uid'] = $uid;
+        $cacheValue['scope'] = ScopeEnum::User;
+        return $cacheValue;
+    }
+
+    private function grantUid($wxResult)
     {
         $user = UserModel::getByOpenID($wxResult['openid']);
 
@@ -55,16 +101,7 @@ class UserToken extends Token
             $uid = $this->newUser($wxResult['openid']);
         }
 
-        $cacheValue = $this->prepareCacheValue($wxResult,$uid);
-        return $this->saveToCache($cacheValue);
-    }
-
-    private function prepareCacheValue($wxResult,$uid)
-    {
-        $cacheValue = $wxResult;
-        $cacheValue['uid'] = $uid;
-        $cacheValue['scope'] = ScopeEnum::User;
-        return $cacheValue;
+        return $uid;
     }
 
     private function newUser($openid)

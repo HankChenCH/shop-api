@@ -14,6 +14,7 @@ use think\Exception;
 use app\lib\enum\ScopeEnum;
 use app\lib\exception\TokenException;
 use app\lib\exception\ForbiddenException;
+use \Firebase\JWT\JWT;
 
 class Token
 {
@@ -34,6 +35,18 @@ class Token
 	{
 		$token = Request::instance()
 			->header('token');
+		$tokenType = config('setting.token_type');
+		$method = 'get' . $tokenType . 'Var';
+		
+		if (method_exists(__CLASS__, $method)) {
+			return static::$method($token, $key);
+		} else {
+			throw new \Exception();
+		}
+	}
+
+	protected static function getCacheVar($token, $key)
+	{
 		$vars = Cache::get($token);
 
 		if (!$vars) {
@@ -45,6 +58,25 @@ class Token
 
 			if (array_key_exists($key, $vars)) {
 				return $vars[$key];
+			}else{
+				throw new Exception("尝试获取的token变量并不存在");
+			}
+		}
+	}
+
+	protected static function getJWTVar($token, $key)
+	{
+		$vars = static::decodedJWT($token);
+
+		if (!$vars) {
+			throw new TokenException();
+		}else{
+			if (!is_object($vars)) {
+				$vars = json_decode($vars,true);
+			}
+
+			if (isset($vars->user->$key)) {
+				return $vars->user->$key;
 			}else{
 				throw new Exception("尝试获取的token变量并不存在");
 			}
@@ -69,6 +101,19 @@ class Token
 			->header('token');
 		$vars = Cache::pull($token);
 		return $vars;
+	}
+
+	public static function generateJWT($info)
+	{
+		$jwt = JWT::encode($info, config('secure.token_salt'));
+		if (!$jwt) {
+			throw new TokenException([
+                'msg' => '令牌初始化失败',
+                'errorCode' => 10001
+            ]);
+		}
+
+		return $jwt;
 	}
 
 	public static function isValidOperate($checkUID)
@@ -147,5 +192,22 @@ class Token
 		}else{
 			return false;
 		}
+	}
+
+	public static function verifyJWT($jwt)
+	{
+		return (bool)static::decodedJWT($jwt);
+	}
+
+	public static function decodedJWT($jwt)
+	{
+		try{
+            $decoded = JWT::decode($jwt, config('secure.token_salt'), array('HS256'));
+            
+            return $decoded;
+        } catch (\Exception $e) {
+        	// var_dump($e->getMessage());
+            return false;
+        }
 	}
 }
