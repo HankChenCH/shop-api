@@ -465,6 +465,7 @@ class Order
 		foreach ($orders as $key => $order) {
             foreach ($order['products'] as $product) {
                 if (!empty($product['batch_id']) && $buyNowRedis->getStock($product['batch_id'])) {
+                	echo $product['batch_id'];
                     $buyNowRedis->incrStock($product['batch_id'], $product['count']);
                 }
                 // echo $product['batch_id'];
