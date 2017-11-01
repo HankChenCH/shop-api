@@ -63,6 +63,7 @@ Route::group('api', function(){
 	});
 
 	Route::group('/:version/token',function (){
+		Route::get('/jwt','api/:version.Token/getJwt');
 		Route::post('/user','api/:version.Token/getToken');
 		Route::post('/verify','api/:version.Token/validateToken');
 		Route::post('/admin/relogin','api/:version.Token/reAdminToken');

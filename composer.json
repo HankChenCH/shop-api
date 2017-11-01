@@ -18,7 +18,8 @@
     "require": {
         "php": ">=5.4.0",
         "topthink/framework": "^5.0.7",
-        "qiniu/php-sdk": "^7.2"
+        "qiniu/php-sdk": "^7.2",
+        "firebase/php-jwt": "^5.0"
     },
     "extra": {
         "think-path": "thinkphp"
