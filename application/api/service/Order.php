@@ -310,7 +310,8 @@ class Order
 
 		$orders = OrderProduct::with(['order' => 
 					function ($query) use ($uid){
-						$query->where('user_id', '=', $uid);
+						$query->where('user_id', '=', $uid)
+						    ->where('status', '>=', 0);
 					}
 				])
 				->where('batch_id', 'in', $oBatchIDs)
@@ -461,14 +462,12 @@ class Order
 
 	public static function reduceBuyNowStockToRedis($orders)
 	{
-		$buyNowRedis = new BuyNowRedis();
+		$buyNowRedis = new BuyNowRedis(0);
 		foreach ($orders as $key => $order) {
             foreach ($order['products'] as $product) {
-                if (!empty($product['batch_id']) && $buyNowRedis->getStock($product['batch_id'])) {
-                	echo $product['batch_id'];
-                    $buyNowRedis->incrStock($product['batch_id'], $product['count']);
+                if (!empty($product['batch_id']) && $buyNowRedis->getStock($product['batch_id']) >= 0) {
+					$buyNowRedis->incrStock($product['batch_id'], $product['count']);
                 }
-                // echo $product['batch_id'];
             }
         }
 	}
