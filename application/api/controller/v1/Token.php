@@ -52,7 +52,7 @@ class Token
     {
         (new TokenGet())->goCheck();
         $ut = new UserToken($code);
-        $token = $ut->getJWT();
+        $token = $ut->get();
         return [
             'token' => $token
         ];

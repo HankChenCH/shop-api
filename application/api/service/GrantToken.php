@@ -4,6 +4,6 @@ namespace app\api\service;
 
 interface GrantToken
 {
-	private function grantJWT($userInfo);
-	private function granteCache($userInfo);
+	public function grantJWT($userInfo);
+	public function grantCache($userInfo);
 }
