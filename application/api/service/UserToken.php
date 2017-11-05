@@ -51,7 +51,7 @@ class UserToken extends Token implements GrantToken
         }
     }
 
-    private function grantJWT($wxResult)
+    public function grantJWT($wxResult)
     {
         $uid = $this->grantUid($wxResult);
 
@@ -59,7 +59,7 @@ class UserToken extends Token implements GrantToken
         return self::generateJWT($userInfo);
     }
 
-    private function grantCache($wxResult)
+    public function grantCache($wxResult)
     {
         $uid = $this->grantUid($wxResult);
 
@@ -69,16 +69,14 @@ class UserToken extends Token implements GrantToken
 
     private function prepareUserInfo($wxResult,$uid)
     {
-        $info = $wxResult;
         $info['iss'] = "https://zsshitan.com";
         $info['aud'] = UserTypeEnum::Weapp;
         $info['iat'] = time() - 1000;
         $info['nbf'] = time();
         $info['exp'] = time() + config('setting.token_expire_in');
-        $info['user'] = [
-            "uid" => 2,
-            "scope" => ScopeEnum::User
-        ];
+	$info['user'] = $wxResult;
+        $info['user']['uid'] = $uid;
+        $info['user']['scope'] = ScopeEnum::User;
 
         return $info;
     }

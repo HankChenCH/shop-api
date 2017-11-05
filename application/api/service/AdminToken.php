@@ -31,7 +31,7 @@ class AdminToken extends Token implements GrantToken
         }
     }
 
-    private function granteJWT($admin)
+    public function grantJWT($admin)
     {
         $info = $this->prepareUserInfo($admin);
         return self::generateJWT($info);
@@ -54,7 +54,7 @@ class AdminToken extends Token implements GrantToken
         return $info;
     }
 
-    private function grantCache($admin)
+    public function grantCache($admin)
     {
         $cacheValue = $this->prepareCacheValue($admin);
         return $this->saveToCache($cacheValue);
