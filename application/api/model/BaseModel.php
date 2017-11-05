@@ -31,7 +31,7 @@ class BaseModel extends Model
             switch ($key) {
                 case 'name':
                 case 'true_name':
-                case 'nick_name':
+                case 'nickname':
                     $models->where($key, 'like', "%{$value}%");
 
                     break;
