@@ -12,6 +12,7 @@ use app\api\model\User as UserModel;
 use app\lib\exception\WxException;
 use app\lib\exception\TokenException;
 use app\lib\enum\ScopeEnum;
+use app\lib\enum\UserTypeEnum;
 
 class UserToken extends Token implements GrantToken
 {
@@ -70,7 +71,7 @@ class UserToken extends Token implements GrantToken
     {
         $info = $wxResult;
         $info['iss'] = "https://zsshitan.com";
-        $info['aud'] = "weapp";
+        $info['aud'] = UserTypeEnum::Weapp;
         $info['iat'] = time() - 1000;
         $info['nbf'] = time();
         $info['exp'] = time() + config('setting.token_expire_in');

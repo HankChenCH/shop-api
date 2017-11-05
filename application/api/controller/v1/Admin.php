@@ -34,6 +34,11 @@ class Admin extends BaseController
 		return $admins;
 	}
 
+	public function getChatMember()
+	{
+		return AdminModel::all();
+	}
+
 	public function createAdmin()
 	{
 		$baseInfoValidate = new AdminNew();

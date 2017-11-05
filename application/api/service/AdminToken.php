@@ -10,6 +10,7 @@ namespace app\api\service;
 
 use app\lib\exception\AdminException;
 use app\lib\enum\ScopeEnum;
+use app\lib\enum\UserTypeEnum;
 
 class AdminToken extends Token implements GrantToken
 {
@@ -39,7 +40,7 @@ class AdminToken extends Token implements GrantToken
     private function prepareUserInfo($admin)
     {
         $info['iss'] = "https://zsshitan.com";
-        $info['aud'] = "manager";
+        $info['aud'] = UserTypeEnum::Manager;
         $info['iat'] = time() - 1000;
         $info['nbf'] = time();
         $info['exp'] = time() + config('setting.token_expire_in');
