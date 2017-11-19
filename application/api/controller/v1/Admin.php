@@ -36,7 +36,8 @@ class Admin extends BaseController
 
 	public function getChatMember()
 	{
-		return AdminModel::all();
+		return AdminModel::where(['state' => '1'])
+				->select();
 	}
 
 	public function createAdmin()

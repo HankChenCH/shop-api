@@ -99,13 +99,18 @@ class Token
 	{
 		$token = Request::instance()
 			->header('token');
-		$vars = Cache::pull($token);
+		$tokenType = config('setting.token_type');
+		if ($tokenType === 'cache') {
+			$vars = Cache::pull($token);
+		} else {
+			$vars = static::decodedJWT($token);
+		}
 		return $vars;
 	}
 
 	public static function generateJWT($info)
 	{
-		$jwt = JWT::encode($info, config('secure.token_salt'));
+		$jwt = JWT::encode($info, md5(config('secure.token_salt') . getClientIp()));
 		if (!$jwt) {
 			throw new TokenException([
                 'msg' => '令牌初始化失败',
@@ -202,7 +207,7 @@ class Token
 	public static function decodedJWT($jwt)
 	{
 		try{
-            $decoded = JWT::decode($jwt, config('secure.token_salt'), array('HS256'));
+            $decoded = JWT::decode($jwt, md5(config('secure.token_salt') . getClientIp()), array('HS256'));
             
             return $decoded;
         } catch (\Exception $e) {

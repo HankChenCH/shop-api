@@ -74,8 +74,9 @@ class UserToken extends Token implements GrantToken
         $info['iat'] = time() - 1000;
         $info['nbf'] = time();
         $info['exp'] = time() + config('setting.token_expire_in');
-	$info['user'] = $wxResult;
+	    $info['user'] = $wxResult;
         $info['user']['uid'] = $uid;
+        $info['user']['ip'] = getClientIp();
         $info['user']['scope'] = ScopeEnum::User;
 
         return $info;

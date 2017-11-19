@@ -137,4 +137,8 @@ Route::group('api', function(){
 		Route::get('/:id', 'api/:version.Product/getOneBuyNow', [], ['id' => '\d+']);
 		Route::get('/:id/stock', 'api/:version.Product/getBuyNowStock', [], ['id' => '\d+']);
 	});
+
+	Route::group('/:version/data', function(){
+		Route::get('/dashboard', 'api/:version.Count/getDashboardData');
+	});
 });

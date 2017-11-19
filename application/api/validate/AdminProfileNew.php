@@ -14,7 +14,7 @@ class AdminProfileNew extends BaseValidate
 	protected $rule = [
 		'phone' => 'isNotEmpty|min:11|max:11',
 		'email' => 'isNotEmpty',
-		'gender' => 'require|isNotEmpty|between:0,1',
+		'gender' => 'isNotEmpty',
 		'age' => 'require|isPostiveInteger',
 	];
 

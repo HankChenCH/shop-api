@@ -16,12 +16,6 @@ class AdminToken extends Token implements GrantToken
 {
 	public function get($admin)
     {
-        if (!$admin) {
-            throw new AdminException([
-            	'msg' => '登录错误, 用户名不存在或密码错误!'
-            ]);
-        }
-
         $tokenType = config('setting.token_type');
         $method = 'grant' . $tokenType;
         if (method_exists($this, $method)) {
@@ -48,6 +42,7 @@ class AdminToken extends Token implements GrantToken
             "uid" => $admin['id'],
             "username" => $admin['true_name'],
             "nickname" => $admin['true_name'],
+            "ip" => long2ip($admin['login_ip']),
             "scope" => ScopeEnum::Super
         ];
 

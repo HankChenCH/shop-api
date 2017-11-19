@@ -8,7 +8,7 @@ use app\lib\exception\AdminException;
 use think\Db;
 
 class Admin 
-{
+{	
 	public static function create($data)
 	{
 		Db::startTrans();
@@ -35,16 +35,20 @@ class Admin
 
 	public static function update($id, $data)
 	{
+
 		Db::startTrans();
 
 		try{
-
-			$adminProfile = AdminProfileModel::where('admin_id', $id)
-								->update($data['profile']);
-
 			$admin = AdminModel::get($id);
 
+			$adminProfile = $admin->profile;
 			$admin->allowField(true)->save($data);
+
+			if (!$adminProfile) {
+	 			$admin->profile()->save($data['profile']);
+	 		}else{
+	 			$adminProfile->save($data['profile']);
+	 		}
 
 			if (!$admin || !$admin->profile) {
 				throw new AdminException([
