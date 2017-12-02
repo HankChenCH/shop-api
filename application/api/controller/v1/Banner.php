@@ -17,14 +17,18 @@ class Banner
 {
     public function getBanner($id)
     {
-        $validate = new IDMustBePostiveInt();
-        $validate->goCheck();
+	$request=  \think\Request::instance();
+        
+	var_dump($request->routeInfo());
+	
+        //$validate = new IDMustBePostiveInt();
+        //$validate->goCheck();
 
-        $bannerList = BannerModel::getBannerById($id);
+        //$bannerList = BannerModel::getBannerById($id);
 
-        if (!$bannerList){
-            throw new BannerMissException();
-        }
-        return $bannerList;
+        //if (!$bannerList){
+            //throw new BannerMissException();
+        //}
+        //return $bannerList;
     }
 }

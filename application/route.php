@@ -106,6 +106,7 @@ Route::group('api', function(){
 	Route::group('/:version/admin',function (){
 		Route::get('','api/:version.Admin/getAll');
 		Route::get('chat_member', 'api/:version.Admin/getChatMember');
+		Route::get('/:id','api/:version.Admin/getOne');
 		Route::post('','api/:version.Admin/createAdmin');
 		Route::put('/:id','api/:version.Admin/updateAdmin');
 		Route::put('/:id/status','api/:version.Admin/disOrEnable');

@@ -28,10 +28,25 @@ class Admin extends BaseController
 						->paginate($pageSize,false,['page' => $page]);
 
 		if ($admins->isEmpty()) {
-			throw new ProductException();
+			throw new AdminException();
 		}
 
 		return $admins;
+	}
+
+	public function getOne($id)
+	{
+	    (new IDMustBePostiveInt())->goCheck();
+	    
+	    $admin = AdminModel::with('profile')
+			->where('state',1)
+	                ->find($id);
+
+	    if(!$admin) {
+	    	throw new AdminException();
+	    }
+
+	    return $admin;
 	}
 
 	public function getChatMember()
