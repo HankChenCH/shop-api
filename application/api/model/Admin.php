@@ -20,6 +20,11 @@ class Admin extends BaseModel
     	return $this->hasOne('AdminProfile','admin_id');
     }
 
+    public function roles()
+    {
+        return $this->belongsToMany('Roles', 'AdminRole', 'role_id', 'admin_id');
+    }
+
     public static function login($loginName, $password)
     {
         $admin = self::get([

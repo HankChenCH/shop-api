@@ -55,7 +55,8 @@ class ProductManager
 	{
 		// $products = ThemeProduct::get(['theme_id' => $themeId]);
 		// $products->delete(true);
-		$products = ThemeProduct::destroy(['theme_id' => $themeId], true);
+		$products = ThemeProduct::where('theme_id', $themeId)
+						->delete(true);
 
 		return $products;
 	}

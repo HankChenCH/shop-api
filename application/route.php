@@ -139,6 +139,22 @@ Route::group('api', function(){
 		Route::get('/:id/stock', 'api/:version.Product/getBuyNowStock', [], ['id' => '\d+']);
 	});
 
+	Route::group('/:version/resource', function (){
+		Route::get('', 'api/:version.Resource/getList');
+		Route::get('/all', 'api/:version.Resource/getAll');
+		Route::post('','api/:version.Resource/create');
+		Route::get('/:id','api/:version.Resource/getOne');
+		Route::put('/:id','api/:version.Resource/update');
+		Route::delete('/:id','api/:version.Resource/remove');
+	});
+
+	Route::group('/:version/role', function (){
+		Route::get('', 'api/:version.Role/getList');
+		Route::post('', 'api/:version.Role/create');
+		Route::put('/:id', 'api/:version.Role/update');
+		Route::delete('/:id', 'api/:version.Role/remove');
+	});
+
 	Route::group('/:version/data', function(){
 		Route::get('/dashboard', 'api/:version.Count/getDashboardData');
 	});

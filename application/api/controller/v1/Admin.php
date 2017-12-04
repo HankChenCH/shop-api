@@ -24,7 +24,7 @@ class Admin extends BaseController
 		(new PagingParameterAdmin())->goCheck();
 
 		$admins = AdminModel::getAllBySearch(['true_name' => $truename, 'create_time' => $createTime])
-						->with('profile')
+						->with(['profile', 'roles'])
 						->paginate($pageSize,false,['page' => $page]);
 
 		if ($admins->isEmpty()) {
@@ -38,8 +38,8 @@ class Admin extends BaseController
 	{
 	    (new IDMustBePostiveInt())->goCheck();
 	    
-	    $admin = AdminModel::with('profile')
-			->where('state',1)
+	    $admin = AdminModel::with(['profile', 'roles'])
+					->where('state',1)
 	                ->find($id);
 
 	    if(!$admin) {
