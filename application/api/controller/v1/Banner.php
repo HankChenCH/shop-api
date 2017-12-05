@@ -11,6 +11,7 @@ namespace app\api\controller\v1;
 
 use app\api\validate\IDMustBePostiveInt;
 use app\api\model\Banner as BannerModel;
+use app\api\model\Resource as ResourceModel;
 use app\exception\BannerMissException;
 
 class Banner
@@ -19,7 +20,15 @@ class Banner
     {
 	$request=  \think\Request::instance();
         
-	var_dump($request->routeInfo());
+	$routeInfo = $request->routeInfo();
+	$rule = array_splice($routeInfo['rule'], 2);
+
+	$permission = strtoupper($routeInfo['option']['method']) . ' /' . implode('/', $rule);
+	//return $permission;
+	
+	$resource = ResourceModel::where('description', $permission)->find();
+
+	return $resource;
 	
         //$validate = new IDMustBePostiveInt();
         //$validate->goCheck();

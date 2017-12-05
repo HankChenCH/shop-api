@@ -26,6 +26,17 @@ class Role extends BaseController
 		return $roles;
 	}
 
+	public function getAll()
+	{
+	    $roles = RoleModel::all();
+
+	    if($roles->isEmpty()){
+	        throw new RoleException();
+	    }
+
+	    return $roles;
+	}
+
 	public function create()
 	{
 		$validate = new RoleNew();

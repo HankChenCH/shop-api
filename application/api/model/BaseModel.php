@@ -71,6 +71,32 @@ class BaseModel extends Model
 
         return $models;
     }
+
+    public static function processAllude($allude, $pk)
+    {	
+        $alludeArr = [];
+
+	if (count($allude) !== 2) {
+            throw new \Exception("影射关系数组必须是2位长度");
+	}
+
+	foreach($allude as $key => $value) {
+	    if ($key === $pk)continue;
+	    
+	    if (!is_array($value)) {
+	        $alludedTo = explode(',', $value);
+	    } else {
+		$alludedTo = $value;
+	    }
+
+	    foreach($alludedTo as $v) {
+	        $alludeArr[] = [$key => $v, $pk => $allude[$pk]];
+	    }
+	}
+
+	return $alludeArr;
+    }
+
 	
     protected function imgPrefix($value,$data)
     {

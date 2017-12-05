@@ -49,6 +49,34 @@ class Admin extends BaseController
 	    return $admin;
 	}
 
+	public function authRole($id)
+	{
+	    (new IDMustBePostiveInt())->goCheck();
+
+	    $validate = new AdminNew();
+	    $validate->scene('authRole');
+	    $validate->goCheck();
+
+	    $data = $validate->getDataOnScene(input('put.'));	    
+
+	    $admin = AdminModel::with('roles')
+			->find($id);
+
+	    if (!$admin) {
+	        throw new AdminException([
+		    'msg' => '授权失败，管理员不存在'
+		]);
+	    }
+
+	    if (count($admin->roles) === 0) {
+	        $adminRoles = AdminService::createAuth($data['admin_role'], $id);
+	    } else {
+	    	$adminRoles = AdminService::updateAuth($data['admin_role'], $id);
+	    }
+
+	    return $adminRoles;
+	}
+
 	public function getChatMember()
 	{
 		return AdminModel::where(['state' => '1'])

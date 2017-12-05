@@ -24,7 +24,7 @@ class Role
 				]);
 			}
 
-			$roleResourceAllude = static::getRoleResourceAllude($data['role_resource'], $role->id);
+			$roleResourceAllude = RoleResourceModel::processAllude(['resource_id' => $data['role_resource'], 'role_id' => $role->id], 'role_id');
 
 			$roleResource = new RoleResourceModel();
 
@@ -68,7 +68,7 @@ class Role
 				]);
 			}
 
-			$roleResourceAllude = static::getRoleResourceAllude($data['role_resource'], $role->id);
+			$roleResourceAllude = RoleResourceModel::processAllude(['resource_id' => $data['role_resource'], 'role_id' => $role->id], 'role_id');
 
 			$roleResource = new RoleResourceModel();
 
@@ -138,21 +138,5 @@ class Role
 			throw $e;
 			
 		}
-	}
-
-	private static function getRoleResourceAllude($role_resource, $role_id)
-	{
-		$allude = explode(',', $role_resource);
-
-		$roleResourceAllude = [];
-
-		foreach ($allude as $key => $value) {
-			$roleResourceAllude[] = [
-				'role_id' => $role_id,
-				'resource_id' => $value
-			];
-		}
-
-		return $roleResourceAllude;
 	}
 }

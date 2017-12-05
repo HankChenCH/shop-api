@@ -22,7 +22,7 @@ class Admin extends BaseModel
 
     public function roles()
     {
-        return $this->belongsToMany('Roles', 'AdminRole', 'role_id', 'admin_id');
+        return $this->belongsToMany('Role', 'AdminRole', 'role_id', 'admin_id');
     }
 
     public static function login($loginName, $password)

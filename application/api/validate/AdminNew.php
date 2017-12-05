@@ -17,12 +17,14 @@ class AdminNew extends BaseValidate
 		'repassword' => 'isNotEmpty|isEqualPassword',
 		'true_name' => 'require|isNotEmpty',
 		'state' => 'require|number|between:0,1',
+		'admin_role' => 'require|checkIDs',
 	];
 
 	protected $scene = [
         'create' => ['user_name','password','repassword','true_name'],
         'update' => ['password','repassword','true_name'],
         'updateStatus' => ['state'],
+	'authRole' => ['admin_role'],
 	];
 
 	protected function isEqualPassword($value, $rule='', $data='', $field='')

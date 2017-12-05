@@ -2,7 +2,7 @@
 
 namespace app\api\model;
 
-class AdminRole extends BaseModel
+class AdminGroup extends BaseModel
 {
 	protected $autoWriteTimestamp = false;
 }

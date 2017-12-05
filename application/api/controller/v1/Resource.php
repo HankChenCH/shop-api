@@ -78,7 +78,7 @@ class Resource extends BaseController
 
 		$data = $validate->getDataOnScene(input('put.'));
 
-		$resource = ResourceModel::save($data, ['id' => $id]);
+		$resource = ResourceModel::update($data, ['id' => $id]);
 
 		if (!$resource) {
 			throw new ResourceException([

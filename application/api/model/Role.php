@@ -9,6 +9,6 @@ class Role extends BaseModel
 	public function resources()
 	{
 		// return $this->hasMany('RoleResource','resource_id','id');
-		return $this->belongsToMany('Resources','role_resource','resource_id','role_id');
+		return $this->belongsToMany('Resource','role_resource','resource_id','role_id');
 	}
 }

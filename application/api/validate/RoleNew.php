@@ -7,7 +7,7 @@ class RoleNew extends BaseValidate
 	protected $rule = [
 		'name' => 'require|isNotEmpty',
 		'description' => 'require|isNotEmpty',
-		'role_resource' => 'require|isNotEmpty',
+		'role_resource' => 'require|checkIDs',
 	];
 
 	protected $scene = [

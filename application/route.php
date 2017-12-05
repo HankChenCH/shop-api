@@ -55,6 +55,7 @@ Route::group('api', function(){
 	Route::group('/:version/category',function(){
 		Route::delete('/batch','api/:version.Category/batchRemoveCategory');
 		Route::get('/all','api/:version.Category/getAllCategories');
+		Route::get('/:id/product', 'api/:version.Product/getAllByCategory');
 		Route::put('/:id/product','api/:version.Category/updateProductList');
 		Route::delete('/:id/product','api/:version.Category/removeProductList');
 		Route::put('/:id','api/:version.Category/updateCategory',[],['id'=>'\d+']);
@@ -110,6 +111,7 @@ Route::group('api', function(){
 		Route::post('','api/:version.Admin/createAdmin');
 		Route::put('/:id','api/:version.Admin/updateAdmin');
 		Route::put('/:id/status','api/:version.Admin/disOrEnable');
+		Route::put('/:id/role', 'api/:version.Admin/authRole');
 		Route::put('/batch','api/:version.Admin/batchUpdate');
 		Route::delete('/:id','api/:version.Admin/removeAdmin');
 		Route::delete('/batch','api/:version.Admin/batchRemoveAdmin');
@@ -150,9 +152,19 @@ Route::group('api', function(){
 
 	Route::group('/:version/role', function (){
 		Route::get('', 'api/:version.Role/getList');
+		Route::get('/all', 'api/:version.Role/getAll');
 		Route::post('', 'api/:version.Role/create');
 		Route::put('/:id', 'api/:version.Role/update');
 		Route::delete('/:id', 'api/:version.Role/remove');
+	});
+
+	Route::group('/:version/group', function (){
+		Route::get('', 'api/:version.Group/getList');
+		Route::get('/my', 'api/:version.Group/getMy');
+		Route::post('', 'api/:version.Group/create');
+		Route::put('/:id/admin', 'api/:version.Group/allotAdmin');
+		Route::put('/:id', 'api/:version.Group/update');
+		Route::delete('/:id', 'api/:version.Group/remove');
 	});
 
 	Route::group('/:version/data', function(){
