@@ -6,7 +6,11 @@ use app\api\validate\PagingParameterAdmin;
 use app\api\validate\IDMustBePostiveInt;
 use app\api\validate\ResourceNew;
 use app\api\model\Resource as ResourceModel;
+use app\api\model\Admin as AdminModel;
+use app\api\service\Auth;
+use app\api\service\Token;
 use app\lib\exception\ResourceException;
+use app\lib\enum\ResourceTypeEnum;
 
 class Resource extends BaseController
 {
@@ -34,6 +38,21 @@ class Resource extends BaseController
 		}
 
 		return $resources;
+	}
+
+	public function getMy()
+	{
+		$uid = Token::getCurrentUid();
+
+		$admin = AdminModel::get($uid, ['roles','roles.resources']);
+
+		if(!$admin) {
+			throw new AdminException();
+		}
+
+		$userResource = Auth::getUserResource($admin);
+		
+		return $userResource;
 	}
 
 	public function getOne($id)
@@ -93,7 +112,7 @@ class Resource extends BaseController
 	{
 		(new IDMustBePostiveInt())->goCheck();
 
-		$resource = ResourceModel::destory($id);
+		$resource = ResourceModel::destroy($id);
 
 		if (!$resource) {
 			throw new ResourceException([

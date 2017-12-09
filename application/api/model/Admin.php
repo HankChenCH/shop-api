@@ -31,7 +31,7 @@ class Admin extends BaseModel
                     'user_name' => $loginName,
                     'password' => md5($password),
                     'state' => '1'
-                ]);
+                ],['roles','roles.resources']);
 
         if (!$admin) {
             throw new AdminException([

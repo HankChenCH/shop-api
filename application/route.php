@@ -144,6 +144,7 @@ Route::group('api', function(){
 	Route::group('/:version/resource', function (){
 		Route::get('', 'api/:version.Resource/getList');
 		Route::get('/all', 'api/:version.Resource/getAll');
+		Route::get('/my', 'api/:version.Resource/getMy');
 		Route::post('','api/:version.Resource/create');
 		Route::get('/:id','api/:version.Resource/getOne');
 		Route::put('/:id','api/:version.Resource/update');

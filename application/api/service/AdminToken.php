@@ -11,6 +11,7 @@ namespace app\api\service;
 use app\lib\exception\AdminException;
 use app\lib\enum\ScopeEnum;
 use app\lib\enum\UserTypeEnum;
+use app\lib\enum\ResourceTypeEnum;
 
 class AdminToken extends Token implements GrantToken
 {
@@ -33,6 +34,7 @@ class AdminToken extends Token implements GrantToken
 
     private function prepareUserInfo($admin)
     {
+	//$userResource = Auth::getUserResource($admin, [ResourceTypeEnum::VIEW, ResourceTypeEnum::DATA]);
         $info['iss'] = "https://zsshitan.com";
         $info['aud'] = UserTypeEnum::Manager;
         $info['iat'] = time() - 1000;
@@ -42,6 +44,8 @@ class AdminToken extends Token implements GrantToken
             "uid" => $admin['id'],
             "username" => $admin['true_name'],
             "nickname" => $admin['true_name'],
+	    //"roles" => $admin['roles'],
+	    //"permission" => $userResource,
             "ip" => long2ip($admin['login_ip']),
             "scope" => ScopeEnum::Super
         ];
