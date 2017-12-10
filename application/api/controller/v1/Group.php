@@ -28,6 +28,13 @@ class Group extends BaseController
 
 	public function getMy()
 	{
+		$myGroups = GroupService::getMyGroups();
+
+		if (!$myGroups) {
+			throw new GroupException();
+		}
+
+		return $myGroups;
 	}
 
 	public function create()

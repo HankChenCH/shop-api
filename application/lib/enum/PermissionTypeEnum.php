@@ -4,7 +4,7 @@ namespace app\lib\enum;
 
 class PermissionTypeEnum
 {
-	const PUBLIC = '1';
-	const PROTECTED = '2';
-	const PRIVATE = '3';
+	const PUB = '1';
+	const PRO = '2';
+	const PRI = '3';
 }

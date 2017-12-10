@@ -13,7 +13,7 @@ use app\lib\exception\AdminException;
 
 class Admin extends BaseModel
 {
-    protected $hidden = ['password','update_time','delete_time'];
+    protected $hidden = ['password','update_time','delete_time', 'pivot'];
 
     public function profile()
     {
@@ -23,6 +23,11 @@ class Admin extends BaseModel
     public function roles()
     {
         return $this->belongsToMany('Role', 'AdminRole', 'role_id', 'admin_id');
+    }
+
+    public function groups()
+    {
+        return $this->belongsToMany('ChatGroup', 'AdminGroup', 'group_id', 'admin_id');
     }
 
     public static function login($loginName, $password)

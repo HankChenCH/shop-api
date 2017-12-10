@@ -3,6 +3,7 @@
 namespace app\api\service;
 
 use app\api\model\ChatGroup as GroupModel;
+use app\api\model\Admin as AdminModel;
 use app\api\model\AdminGroup as AdminGroupModel;
 use app\lib\exception\GroupException;
 
@@ -53,5 +54,15 @@ class Group
 		}
 
 		return $adminGroup;
+	}
+
+	public static function getMyGroups()
+	{
+		$uid = Token::getCurrentUid();
+
+		$groups = AdminModel::with(['groups'])
+						->find($uid);
+
+		return $groups;
 	}
 }

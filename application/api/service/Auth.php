@@ -15,7 +15,7 @@ class Auth
 	{
 		$resource = self::getCurrentResource();
 
-		if ($resource && in_array($resource->permission_type, [PermissionTypeEnum::PROTECTED, PermissionTypeEnum::PRIVATE])) {
+		if ($resource && in_array($resource->permission_type, [PermissionTypeEnum::PRO, PermissionTypeEnum::PRI])) {
 			
 			$userPermission = self::getUserPermission();
 	

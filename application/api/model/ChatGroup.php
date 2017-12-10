@@ -4,7 +4,7 @@ namespace app\api\model;
 
 class ChatGroup extends BaseModel
 {
-	protected $hidden = ['update_time', 'delete_time'];
+	protected $hidden = ['update_time', 'delete_time', 'pivot'];
 
 	public function admins()
 	{

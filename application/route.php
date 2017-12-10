@@ -168,6 +168,11 @@ Route::group('api', function(){
 		Route::delete('/:id', 'api/:version.Group/remove');
 	});
 
+	Route::group(':version/message', function (){
+		Route::get('/member/:id', 'api/:version.Message/getList');
+		Route::post('', 'api/:version.Message/sendMessage');
+	});
+
 	Route::group('/:version/data', function(){
 		Route::get('/dashboard', 'api/:version.Count/getDashboardData');
 	});
