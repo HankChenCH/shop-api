@@ -26,6 +26,21 @@ class Role extends BaseController
 		return $roles;
 	}
 
+	public function getMy()
+	{
+		$uid = Token::getCurrentUid();
+
+		$admin = AdminModel::get($uid, ['roles']);
+
+		if(!$admin) {
+			throw new AdminException();
+		}
+
+		$userRole = Auth::getUserRole($admin);
+		
+		return $userRole;
+	}
+
 	public function getAll()
 	{
 	    $roles = RoleModel::all();

@@ -153,6 +153,7 @@ Route::group('api', function(){
 
 	Route::group('/:version/role', function (){
 		Route::get('', 'api/:version.Role/getList');
+		Route::get('/my', 'api/:version.Role/getMy');
 		Route::get('/all', 'api/:version.Role/getAll');
 		Route::post('', 'api/:version.Role/create');
 		Route::put('/:id', 'api/:version.Role/update');

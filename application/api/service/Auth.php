@@ -57,16 +57,27 @@ class Auth
 	public static function getUserResource($admin,$type=[ResourceTypeEnum::VIEW,ResourceTypeEnum::DATA])
 	{
 		$userPermission = [];
-                foreach($admin->roles as $role) {
-                        foreach($role->resources as $resource) {
-                                if (!in_array($resource->resource_type, $type))continue;
-                                $userPermission[$resource->resource_type][] = $resource->description;
-                        }
+        foreach($admin->roles as $role) {
+                foreach($role->resources as $resource) {
+                        if (!in_array($resource->resource_type, $type))continue;
+                        $userPermission[$resource->resource_type][] = $resource->description;
                 }
+        }
 
-                foreach ($type as $t) {
+        foreach ($type as $t) {
 			array_unique($userPermission[$t]);
 		}
-                return $userPermission;
+
+        return $userPermission;
+	}
+
+	public static function getUserRole($admin)
+	{
+		$userRole = [];
+        foreach($admin->roles as $role) {
+            $userRole[] = $role->description;
+        }
+
+        return $userRole;
 	}
 }
