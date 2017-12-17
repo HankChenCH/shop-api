@@ -4,9 +4,11 @@ namespace app\api\controller\v1;
 
 use app\api\model\ChatMessage as MessageModel;
 use app\api\service\Message as MessageService;
+use app\api\service\Token as TokenService;
 use app\api\validate\MessageSend;
 use app\api\validate\IDMustBePostiveInt;
 use app\lib\exception\ChatException;
+use app\lib\enum\ChatTypeEnum;
 
 class Message extends BaseController
 {
@@ -14,14 +16,30 @@ class Message extends BaseController
 	{
 		(new IDMustBePostiveInt())->goCheck();
 
-		$messages = MessageModel::with(['sender'])
+		if($to_type === ChatTypeEnum::GROUP){
+
+			$messages = MessageModel::with(['sender'])
 						->where('to_type', $to_type)
 						->where('to_id', $id)
-						->select();
+						->order('create_time desc')
+						->paginate($pageSize,false,['page' => $page]);
 
-		if ($messages->isEmpty()) {
-			throw new ChatException();
+		} elseif ($to_type === ChatTypeEnum::MEMBER) {
+			$uid = TokenService::getCurrentUid();
+			$messages = MessageModel::with(['sender'])
+						->where(function ($query) use ($id, $uid, $to_type){
+							$query->where('to_type', $to_type)->where('from_id', $id)->where('to_id', $uid);
+						})
+						->whereOr(function ($query) use ($id, $uid, $to_type){
+							$query->where('to_type', $to_type)->where('from_id', $uid)->where('to_id', $id);
+						})
+						->order('create_time desc')
+						->paginate($pageSize, false, ['page' => $page]);
 		}
+
+		//if ($messages->isEmpty()) {
+		//	throw new ChatException();
+		//}
 
 		return $messages;
 	}

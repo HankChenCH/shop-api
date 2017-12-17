@@ -12,7 +12,7 @@ class Message
 	{
 		$uid = Token::getCurrentUid();
 
-		$data['form_id'] = $uid;
+		$data['from_id'] = $uid;
 
 		$admin = AdminModel::find($uid);
 

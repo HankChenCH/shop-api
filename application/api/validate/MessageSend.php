@@ -7,7 +7,7 @@ class MessageSend extends BaseValidate
 	protected $rule = [
 		'message' => 'require|isNotEmpty',
 		'to_id' => 'require|isPostiveInteger',
-		'to_type' => 'reqire|isNotEmpty',
+		'to_type' => 'require|isNotEmpty',
 	];
 
 	protected $scene = [

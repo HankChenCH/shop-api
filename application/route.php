@@ -169,7 +169,7 @@ Route::group('api', function(){
 	});
 
 	Route::group(':version/message', function (){
-		Route::get('/member/:id', 'api/:version.Message/getList');
+		Route::get('/:id', 'api/:version.Message/getList');
 		Route::post('', 'api/:version.Message/sendMessage');
 	});
 
