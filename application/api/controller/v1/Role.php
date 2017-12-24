@@ -5,9 +5,13 @@ namespace app\api\controller\v1;
 use app\api\validate\PagingParameterAdmin;
 use app\api\validate\IDMustBePostiveInt;
 use app\api\validate\RoleNew;
+use app\api\model\Admin as AdminModel;
 use app\api\model\Role as RoleModel;
+use app\api\service\Token;
+use app\api\service\Auth;
 use app\api\service\Role as RoleService;
 use app\lib\exception\RoleException;
+use app\lib\exception\AdminException;
 
 class Role extends BaseController
 {
