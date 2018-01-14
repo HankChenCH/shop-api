@@ -84,7 +84,7 @@ class Order extends BaseController
 		return $counts;
 	}
 
-	public function getSummaryByUser($status, $page=1, $size=15)
+	public function getSummaryByUser($status=[-1,1,2,3,4], $page=1, $size=15)
 	{
 		(new PagingParameter())->goCheck();
 		$uid = TokenService::getCurrentUid();
